@@ -81,7 +81,7 @@ export default function Jar({
   const [animationDuration, setAnimationDuration] = useState(
     () =>
       read(LOCAL_STORAGE_KEYS.avatarAnimationDuration) ??
-      ANIMATION_DURATION_CONFIGURATION.min
+      ANIMATION_DURATION_CONFIGURATION.max
   );
 
   const debounceAnimation = debounce(

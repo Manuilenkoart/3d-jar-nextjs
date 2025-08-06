@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { rubikMonoOne } from "@/lib/fonts";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           {children}
           <Analytics />
+          <SpeedInsights />
         </AppRouterCacheProvider>
       </body>
     </html>
