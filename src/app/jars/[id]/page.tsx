@@ -2,9 +2,10 @@ import { fetchMainJarInfo } from "@/lib/hooks";
 import Jar from "@/ui/Jar";
 import { redirect } from "next/navigation";
 
-export default async function Page({ params }: { 
-  params: { id: string } 
-  searchParams?: { [key: string]: string | string[] | undefined }
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
 
