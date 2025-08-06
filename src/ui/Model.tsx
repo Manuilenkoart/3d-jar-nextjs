@@ -14,6 +14,7 @@ type Props = {
 
 export const Model: FC<Props> = ({ position, castShadow, animationIndex }) => {
   const group = useRef<Group>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { nodes, materials, animations } = useGLTF("/Model.glb") as any;
 
   const { actions, names } = useAnimations(animations, group);
@@ -23,7 +24,7 @@ export const Model: FC<Props> = ({ position, castShadow, animationIndex }) => {
     return () => {
       actions[names[animationIndex]]?.fadeOut(0.5);
     };
-  }, [animationIndex]);
+  }, [actions, animationIndex, names]);
 
   return (
     <group ref={group} {...{ position, castShadow }} dispose={null}>

@@ -1,8 +1,15 @@
 import { FC } from "react";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { Box, Stack } from "@mui/material";
+import { Jar } from "@/lib/definitions";
 
-export const StatusBar: FC<any> = ({
+type Props = {
+  isLoading: boolean;
+  jarAmount: Jar["jarAmount"];
+  jarGoal: Jar["jarGoal"];
+  fetchError: string;
+};
+export const StatusBar: FC<Props> = ({
   isLoading,
   jarAmount,
   jarGoal,
