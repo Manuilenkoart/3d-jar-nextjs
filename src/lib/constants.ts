@@ -24,3 +24,5 @@ export const ANIMATION_DURATION_CONFIGURATION = {
   min: 10,
   max: RE_FETCH_INTERVAL - 1,
 };
+
+export const IS_MOCK_FETCH = true;
