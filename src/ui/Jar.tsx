@@ -28,6 +28,7 @@ import {
   Button,
   Checkbox,
   Drawer,
+  Fab,
   FormControlLabel,
   IconButton,
   Slider,
@@ -45,6 +46,7 @@ import {
   LOCAL_STORAGE_KEYS,
   SEARCH_PARAMS,
   RE_FETCH_INTERVAL,
+  UTM,
 } from "@/lib/constants";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -69,6 +71,9 @@ export default function Jar({
   const [fetchError, setFetchError] = useState("");
 
   const [inputJarId, setInputJarId] = useState(() => params.id);
+
+  const isWidgetMode =
+    searchParams.get(SEARCH_PARAMS.utmContent) === UTM.content.isWidgetMode;
 
   const [isShowText, setIsShowText] = useState<boolean>(() => {
     const param = searchParams.get(SEARCH_PARAMS.isShowText);
@@ -184,7 +189,8 @@ export default function Jar({
         { name: SEARCH_PARAMS.animationDuration, value: animationDuration },
       ]
         .map(
-          ({ name, value }, idx) => `${idx === 0 ? "?" : "&"}${name}=${value}`
+          ({ name, value }, idx) =>
+            `${idx === 0 ? `?${SEARCH_PARAMS.utmContent}=${UTM.content.isWidgetMode}&` : "&"}${name}=${value}`
         )
         .join(""),
     [animationDuration, bcColor, interfaceFontColor, isShowText, isTransparent]
@@ -226,17 +232,20 @@ export default function Jar({
 
   return (
     <div style={{ backgroundColor: isTransparent ? "transparent" : bcColor }}>
-      <Button
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 1,
-        }}
-        startIcon={<Menu />}
-        variant="text"
-        onClick={() => setIsVisibleSidebar(true)}
-      />
+      {isWidgetMode ? null : (
+        <Button
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 1,
+          }}
+          color="inherit"
+          startIcon={<Menu />}
+          variant="text"
+          onClick={() => setIsVisibleSidebar(true)}
+        />
+      )}
 
       <Drawer open={isVisibleSidebar} onClose={handleHideSideBar}>
         <Stack
@@ -281,18 +290,13 @@ export default function Jar({
                 />
               </Stack>
 
-              <Button
-                variant="contained"
-                sx={{
-                  borderRadius: "50%",
-                  minWidth: "10px",
-                  padding: "10px",
-                }}
+              <Fab
+                color="primary"
                 disabled={inputJarId.length < 7}
                 onClick={() => handleHideSideBar()}
               >
                 GO
-              </Button>
+              </Fab>
             </Stack>
           </Panel>
 
@@ -359,9 +363,23 @@ export default function Jar({
             </Box>
           </Panel>
 
-          <Panel title="Streaming link">
+          <Panel
+            title="Streaming link"
+            actions={
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    windowLocationOrigin + pathname + makeSearchParams
+                  )
+                }
+              >
+                copy
+              </Button>
+            }
+          >
             <Box sx={{ maxWidth: "500px" }}>
-              {windowLocationOrigin + pathname + makeSearchParams}
+              <p>{windowLocationOrigin + pathname + makeSearchParams}</p>
             </Box>
           </Panel>
         </Stack>
@@ -396,7 +414,9 @@ export default function Jar({
           <Footer {...{ description, interfaceFontColor }} />
         ) : null}
 
-        <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />
+        {isWidgetMode ? null : (
+          <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />
+        )}
       </div>
     </div>
   );

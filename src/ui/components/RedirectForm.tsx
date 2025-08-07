@@ -1,6 +1,6 @@
 "use client";
 import { FC, useEffect, useState } from "react";
-import { Button, Stack, TextField } from "@mui/material";
+import { Fab, Stack, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { setCookie, getCookie } from "@/lib/utils";
 
@@ -44,18 +44,13 @@ export const RedirectForm: FC = () => {
         />
       </Stack>
 
-      <Button
-        variant="contained"
-        sx={{
-          borderRadius: "50%",
-          minWidth: "16px",
-          padding: "16px",
-        }}
+      <Fab
+        color="primary"
         disabled={textFieldValue.length < 7}
         onClick={handleSubmit}
       >
         GO
-      </Button>
+      </Fab>
     </Stack>
   );
 };

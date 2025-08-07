@@ -21,6 +21,13 @@ export const SEARCH_PARAMS = {
   bcColor: "background-color",
   fontColor: "font-color",
   animationDuration: "animation-duration",
+  utmContent: "utm_content",
+};
+
+export const UTM = {
+  content: {
+    isWidgetMode: "widget",
+  },
 };
 
 export const RE_FETCH_INTERVAL =
