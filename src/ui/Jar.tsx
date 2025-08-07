@@ -129,6 +129,22 @@ export default function Jar({
     );
   });
 
+  const [hasAvatarShadow, setHasAvatarShadow] = useState(true);
+
+  useEffect(() => {
+    const param = searchParams.get(SEARCH_PARAMS.hasAvatarShadow);
+    const storage = read(LOCAL_STORAGE_KEYS.hasAvatarShadow);
+
+    const hasAvatarShadowStorage = param
+      ? JSON.parse(param)
+      : (storage ?? true);
+
+    if (hasAvatarShadow !== hasAvatarShadowStorage) {
+      setHasAvatarShadow(hasAvatarShadowStorage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const debounceAnimation = debounce(
     setAnimationIndex,
     1000 * animationDuration
@@ -187,13 +203,21 @@ export default function Jar({
         { name: SEARCH_PARAMS.fontColor, value: interfaceFontColor.slice(1) },
         { name: SEARCH_PARAMS.bcColor, value: bcColor.slice(1) },
         { name: SEARCH_PARAMS.animationDuration, value: animationDuration },
+        { name: SEARCH_PARAMS.hasAvatarShadow, value: hasAvatarShadow },
       ]
         .map(
           ({ name, value }, idx) =>
             `${idx === 0 ? `?${SEARCH_PARAMS.utmContent}=${UTM.content.isWidgetMode}&` : "&"}${name}=${value}`
         )
         .join(""),
-    [animationDuration, bcColor, interfaceFontColor, isShowText, isTransparent]
+    [
+      animationDuration,
+      bcColor,
+      hasAvatarShadow,
+      interfaceFontColor,
+      isShowText,
+      isTransparent,
+    ]
   );
 
   const handleHideSideBar = useCallback(() => {
@@ -203,6 +227,7 @@ export default function Jar({
     write(LOCAL_STORAGE_KEYS.bcColor, bcColor);
     write(LOCAL_STORAGE_KEYS.bcColorIsTransparent, isTransparent);
     write(LOCAL_STORAGE_KEYS.isShowText, isShowText);
+    write(LOCAL_STORAGE_KEYS.hasAvatarShadow, hasAvatarShadow);
 
     if (params && params.id !== inputJarId) {
       setCookie(COOKIE_KEYS.jarId, inputJarId);
@@ -214,6 +239,7 @@ export default function Jar({
     bcColor,
     isTransparent,
     isShowText,
+    hasAvatarShadow,
     params,
     inputJarId,
     router,
@@ -221,6 +247,10 @@ export default function Jar({
 
   const handleIsShowInterfaceText = useCallback(() => {
     setIsShowText((p) => !p);
+  }, []);
+
+  const handleAvatarShadow = useCallback(() => {
+    setHasAvatarShadow((p) => !p);
   }, []);
 
   const windowLocationOrigin = useMemo(() => getWindowLocationOrigin(), []);
@@ -301,7 +331,7 @@ export default function Jar({
           </Panel>
 
           <Panel title="Interface">
-            <Box sx={{ display: "grid", gap: "16px" }}>
+            <Box sx={{ display: "grid", gap: "12px" }}>
               <Box
                 sx={{
                   display: "flex",
@@ -323,7 +353,7 @@ export default function Jar({
                       onChange={handleTransparent}
                     />
                   }
-                  label="transparent"
+                  label="Background transparent"
                 />
               </Box>
 
@@ -360,6 +390,16 @@ export default function Jar({
                   max={ANIMATION_DURATION_CONFIGURATION.max}
                 />
               </Box>
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={hasAvatarShadow}
+                    onChange={handleAvatarShadow}
+                  />
+                }
+                label="Show shadow"
+              />
             </Box>
           </Panel>
 
@@ -404,7 +444,7 @@ export default function Jar({
 
         <Scene>
           <Model
-            castShadow
+            isCastShadow={hasAvatarShadow}
             position={[0, 0, 0]}
             animationIndex={animationIndex}
           />

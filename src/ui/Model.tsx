@@ -9,10 +9,14 @@ useGLTF.preload("/Model.glb");
 type Props = {
   position: [x: number, y: number, z: number];
   animationIndex: number;
-  castShadow?: boolean;
+  isCastShadow?: boolean;
 };
 
-export const Model: FC<Props> = ({ position, castShadow, animationIndex }) => {
+export const Model: FC<Props> = ({
+  position,
+  isCastShadow,
+  animationIndex,
+}) => {
   const group = useRef<Group>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { nodes, materials, animations } = useGLTF("/Model.glb") as any;
@@ -27,7 +31,11 @@ export const Model: FC<Props> = ({ position, castShadow, animationIndex }) => {
   }, [actions, animationIndex, names]);
 
   return (
-    <group ref={group} {...{ position, castShadow }} dispose={null}>
+    <group
+      ref={group}
+      {...{ position, castShadow: isCastShadow }}
+      dispose={null}
+    >
       <group name="Scene">
         <group name="Armature" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
           <skinnedMesh
@@ -35,7 +43,7 @@ export const Model: FC<Props> = ({ position, castShadow, animationIndex }) => {
             geometry={nodes.Ch14.geometry}
             material={materials.Ch14_Body}
             skeleton={nodes.Ch14.skeleton}
-            castShadow
+            castShadow={isCastShadow}
             receiveShadow
           />
 

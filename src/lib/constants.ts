@@ -13,6 +13,7 @@ export const LOCAL_STORAGE_KEYS = {
   bcColorIsTransparent: "background-color-is-transparent",
   isShowText: "is-show-text",
   avatarAnimationDuration: "avatar-animation-duration",
+  hasAvatarShadow:'has-avatar-shadow',
 };
 
 export const SEARCH_PARAMS = {
@@ -21,6 +22,7 @@ export const SEARCH_PARAMS = {
   bcColor: "background-color",
   fontColor: "font-color",
   animationDuration: "animation-duration",
+  hasAvatarShadow:'has-avatar-shadow',
   utmContent: "utm_content",
 };
 
