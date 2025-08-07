@@ -252,7 +252,7 @@ export default function Jar({
             }}
           >
             <h2>Налаштування</h2>
-            <IconButton aria-label="close">
+            <IconButton aria-label="close" onClick={() => handleHideSideBar()}>
               <CloseIcon />
             </IconButton>
           </Stack>
