@@ -19,7 +19,14 @@ import {
   useSearchParams,
 } from "next/navigation";
 
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { StatusBar } from "@/ui/StatusBar";
 
 import Menu from "@mui/icons-material/Menu";
@@ -38,7 +45,7 @@ import {
 import { Panel } from "./components";
 import { Picker } from "./Picker";
 import { inter } from "@/lib/fonts";
-import { type Jar } from "@/lib/definitions";
+import { TJar } from "@/lib/definitions";
 import {
   ANIMATION_DURATION_CONFIGURATION,
   ANIMATIONS,
@@ -51,11 +58,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 type Props = {
-  mainJarInfo: Jar;
+  mainJarInfo: TJar;
 };
-export default function Jar({
-  mainJarInfo: { extJarId, ...restMainJarInfo },
-}: Props) {
+function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
@@ -461,3 +466,4 @@ export default function Jar({
     </div>
   );
 }
+export default memo(Jar);

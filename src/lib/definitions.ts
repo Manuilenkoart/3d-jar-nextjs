@@ -1,4 +1,4 @@
-export type Jar = {
+export type TJar = {
   description: string;
   jarGoal: number;
   jarAmount: number;

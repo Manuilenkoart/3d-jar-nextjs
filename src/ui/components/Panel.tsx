@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import { FC, ReactNode } from "react";
+import { FC, memo, ReactNode } from "react";
 
 type Props = {
   title: string;
@@ -26,4 +26,4 @@ const Panel: FC<Props> = ({ title, children, actions }) => {
   );
 };
 
-export default Panel;
+export default memo(Panel);

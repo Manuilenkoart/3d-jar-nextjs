@@ -1,7 +1,7 @@
 import { IS_MOCK_FETCH } from "./constants";
-import { Jar } from "./definitions";
+import { TJar } from "./definitions";
 
-const fetchMock = (): Promise<Jar> =>
+const fetchMock = (): Promise<TJar> =>
   new Promise((resolve) =>
     resolve({
       jarGoal: 1000000,
@@ -15,7 +15,7 @@ const fetchMock = (): Promise<Jar> =>
 export const fetchMainJarInfo = async (
   clientId: string,
   { isMock = IS_MOCK_FETCH } = {}
-): Promise<Jar> => {
+): Promise<TJar> => {
   try {
     if (isMock) return fetchMock();
 
@@ -57,7 +57,7 @@ export const fetchMainJarInfo = async (
 export const fetchWidgetJarInfo = async (
   extJarId: string,
   { isMock = IS_MOCK_FETCH } = {}
-): Promise<Omit<Jar, "extJarId">> => {
+): Promise<Omit<TJar, "extJarId">> => {
   try {
     if (isMock) return fetchMock();
 

@@ -1,38 +1,37 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { Box, Stack } from "@mui/material";
-import { Jar } from "@/lib/definitions";
+import { TJar } from "@/lib/definitions";
 
 type Props = {
   isLoading: boolean;
-  jarAmount: Jar["jarAmount"];
-  jarGoal: Jar["jarGoal"];
+  jarAmount: TJar["jarAmount"];
+  jarGoal: TJar["jarGoal"];
   fetchError: string;
 };
-export const StatusBar: FC<Props> = ({
-  isLoading,
-  jarAmount,
-  jarGoal,
-  fetchError,
-}) => (
-  <Stack
-    direction={"row"}
-    sx={{
-      position: "absolute",
-      left: 0,
-      bottom: 0,
-      color: "#8894a5",
-      padding: "12px",
-    }}
-  >
-    <AutorenewIcon
-      fontSize="small"
+export const StatusBar: FC<Props> = memo(
+  ({ isLoading, jarAmount, jarGoal, fetchError }) => (
+    <Stack
+      direction={"row"}
       sx={{
-        transform: `rotate(${isLoading ? 360 : 0}deg)`,
-        transition: "transform 1s linear",
+        position: "absolute",
+        left: 0,
+        bottom: 0,
+        color: "#8894a5",
+        padding: "12px",
       }}
-    />
-    <Box>{!jarAmount && !jarGoal && !fetchError ? "Loading..." : null}</Box>
-    <Box>{fetchError ?? ""}</Box>
-  </Stack>
+    >
+      <AutorenewIcon
+        fontSize="small"
+        sx={{
+          transform: `rotate(${isLoading ? 360 : 0}deg)`,
+          transition: "transform 1s linear",
+        }}
+      />
+      <Box>{!jarAmount && !jarGoal && !fetchError ? "Loading..." : null}</Box>
+      <Box>{fetchError ?? ""}</Box>
+    </Stack>
+  )
 );
+
+StatusBar.displayName = "StatusBar";

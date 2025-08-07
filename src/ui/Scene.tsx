@@ -2,9 +2,9 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
-import { FC, PropsWithChildren } from "react";
+import { FC, memo, PropsWithChildren } from "react";
 
-export const Scene: FC<PropsWithChildren> = ({ children }) => {
+export const Scene: FC<PropsWithChildren> = memo(({ children }) => {
   return (
     <Canvas
       camera={{
@@ -44,4 +44,6 @@ export const Scene: FC<PropsWithChildren> = ({ children }) => {
       </mesh>
     </Canvas>
   );
-};
+});
+
+Scene.displayName = "Scene";

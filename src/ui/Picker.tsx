@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material";
-import { FC } from "react";
+import { FC, memo } from "react";
 
 type Props = {
   title: string;
   value: string;
   onChange: (color: string) => void;
 };
-export const Picker: FC<Props> = ({ title, value, onChange }) => (
+export const Picker: FC<Props> = memo(({ title, value, onChange }) => (
   <Stack
     direction="row"
     spacing={1}
@@ -24,4 +24,6 @@ export const Picker: FC<Props> = ({ title, value, onChange }) => (
       }}
     />
   </Stack>
-);
+));
+
+Picker.displayName = "Picker";
