@@ -29,6 +29,7 @@ import {
   Checkbox,
   Drawer,
   FormControlLabel,
+  IconButton,
   Slider,
   Stack,
   TextField,
@@ -45,6 +46,7 @@ import {
   SEARCH_PARAMS,
   RE_FETCH_INTERVAL,
 } from "@/lib/constants";
+import CloseIcon from "@mui/icons-material/Close";
 
 type Props = {
   mainJarInfo: Jar;
@@ -238,25 +240,59 @@ export default function Jar({
 
       <Drawer open={isVisibleSidebar} onClose={handleHideSideBar}>
         <Stack
-          spacing={2}
+          spacing={3}
           sx={{ padding: "16px 8px" }}
           className={inter.className}
         >
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <h2>Налаштування</h2>
+            <IconButton aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </Stack>
+
           <Panel title="Поточний збір">
             <Stack
               direction="row"
               sx={{
                 alignItems: "center",
+                gap: "16px",
               }}
             >
-              https://send.monobank.ua/jar/
-              <TextField
-                id="outlined-basic"
-                label="jar id"
-                variant="outlined"
-                value={inputJarId}
-                onChange={(e) => setInputJarId(e.target.value)}
-              />
+              <Stack
+                direction="row"
+                sx={{
+                  alignItems: "center",
+                }}
+              >
+                <p>https://send.monobank.ua/jar/</p>
+                <TextField
+                  id="outlined-basic"
+                  label="jar id"
+                  variant="outlined"
+                  value={inputJarId}
+                  onChange={(e) => setInputJarId(e.target.value)}
+                />
+              </Stack>
+
+              <Button
+                variant="contained"
+                sx={{
+                  borderRadius: "50%",
+                  minWidth: "10px",
+                  padding: "10px",
+                }}
+                disabled={inputJarId.length < 7}
+                onClick={() => handleHideSideBar()}
+              >
+                GO
+              </Button>
             </Stack>
           </Panel>
 
