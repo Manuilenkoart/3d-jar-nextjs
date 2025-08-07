@@ -6,7 +6,7 @@ import { Footer } from "@/ui/Footer";
 import { Header } from "@/ui/Header";
 import { Model } from "@/ui/Model";
 import { Scene } from "@/ui/Scene";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { StatusBar } from "@/ui/StatusBar";
@@ -31,6 +31,7 @@ import {
   ANIMATIONS,
   COOKIE_KEYS,
   LOCAL_STORAGE_KEYS,
+  SEARCH_PARAMS,
   RE_FETCH_INTERVAL,
 } from "@/lib/constants";
 
@@ -40,12 +41,13 @@ type Props = {
 export default function Jar({
   mainJarInfo: { extJarId, ...restMainJarInfo },
 }: Props) {
+  const router = useRouter();
   const params = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
 
   const [animationIndex, setAnimationIndex] = useState(ANIMATIONS.idle);
 
   const [isVisibleSidebar, setIsVisibleSidebar] = useState(false);
-  const [isShowText, setIsShowText] = useState(true);
 
   const [newJarAmount, setNewJarAmount] = useState(0);
   const [jarData, setJarData] = useState(() => restMainJarInfo);
@@ -54,13 +56,29 @@ export default function Jar({
 
   const [inputJarId, setInputJarId] = useState(() => params.id);
 
-  const [interfaceFontColor, setInterfaceFontColor] = useState(
-    () => read(LOCAL_STORAGE_KEYS.fontColor) ?? "#000000"
-  );
+  const [isShowText, setIsShowText] = useState<boolean>(() => {
+    const param = searchParams.get(SEARCH_PARAMS.isShowText);
+    const storage = read(LOCAL_STORAGE_KEYS.isShowText);
+
+    return param ? (JSON.parse(param) as boolean) : (storage ?? true);
+  });
+
+  const [interfaceFontColor, setInterfaceFontColor] = useState(() => {
+    const param = searchParams.get(SEARCH_PARAMS.fontColor);
+    const storage = read(LOCAL_STORAGE_KEYS.fontColor);
+
+    const color = param ? `#${param}` : null;
+
+    return color ?? storage ?? "#000000";
+  });
+
   const [isTransparent, setIsTransparent] = useState(true);
 
   useEffect(() => {
-    const isTransparentStorage = read(LOCAL_STORAGE_KEYS.bcColorIsTransparent);
+    const param = searchParams.get(SEARCH_PARAMS.isTranparent);
+    const storage = read(LOCAL_STORAGE_KEYS.bcColorIsTransparent);
+
+    const isTransparentStorage = param ? JSON.parse(param) : (storage ?? true);
 
     if (isTransparent !== isTransparentStorage) {
       setIsTransparent(isTransparentStorage);
@@ -68,21 +86,29 @@ export default function Jar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [bcColor, setBcColor] = useState("#ffffff");
+  const [bcColor, setBcColor] = useState(() => {
+    const param = searchParams.get(SEARCH_PARAMS.bcColor);
+    const storage = read(LOCAL_STORAGE_KEYS.bcColor);
 
-  useEffect(() => {
-    const backgroundColor = read(LOCAL_STORAGE_KEYS.bcColor);
-    if (backgroundColor && backgroundColor !== bcColor) {
-      setBcColor(backgroundColor);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const color = param ? `#${param}` : null;
 
-  const [animationDuration, setAnimationDuration] = useState(
-    () =>
-      read(LOCAL_STORAGE_KEYS.avatarAnimationDuration) ??
+    return color ?? storage ?? "#ffffff";
+  });
+
+  const [animationDuration, setAnimationDuration] = useState(() => {
+    const param = searchParams.get(SEARCH_PARAMS.animationDuration);
+    const storage = read(LOCAL_STORAGE_KEYS.avatarAnimationDuration);
+
+    //TODO: check is values in min-max ANIMATION_DURATION_CONFIGURATION range
+    const paramNormalized = param ? +param : null;
+    const storageNormalized = storage ? +storage : null;
+
+    return (
+      paramNormalized ||
+      storageNormalized ||
       ANIMATION_DURATION_CONFIGURATION.max
-  );
+    );
+  });
 
   const debounceAnimation = debounce(
     setAnimationIndex,
@@ -134,7 +160,21 @@ export default function Jar({
     setIsTransparent(isChecked);
   }, []);
 
-  const router = useRouter();
+  const makeSearchParams = useMemo(
+    () =>
+      [
+        { name: SEARCH_PARAMS.isTranparent, value: isTransparent },
+        { name: SEARCH_PARAMS.isShowText, value: isShowText },
+        { name: SEARCH_PARAMS.fontColor, value: interfaceFontColor.slice(1) },
+        { name: SEARCH_PARAMS.bcColor, value: bcColor.slice(1) },
+        { name: SEARCH_PARAMS.animationDuration, value: animationDuration },
+      ]
+        .map(
+          ({ name, value }, idx) => `${idx === 0 ? "?" : "&"}${name}=${value}`
+        )
+        .join(""),
+    [animationDuration, bcColor, interfaceFontColor, isShowText, isTransparent]
+  );
 
   const handleHideSideBar = useCallback(() => {
     setIsVisibleSidebar(false);
@@ -142,13 +182,26 @@ export default function Jar({
     write(LOCAL_STORAGE_KEYS.avatarAnimationDuration, animationDuration);
     write(LOCAL_STORAGE_KEYS.bcColor, bcColor);
     write(LOCAL_STORAGE_KEYS.bcColorIsTransparent, isTransparent);
+    write(LOCAL_STORAGE_KEYS.isShowText, isShowText);
 
     if (params && params.id !== inputJarId) {
       setCookie(COOKIE_KEYS.jarId, inputJarId);
 
       router.push(`/jars/${inputJarId}`);
     }
-  }, [animationDuration, bcColor, isTransparent, params, inputJarId, router]);
+  }, [
+    animationDuration,
+    bcColor,
+    isTransparent,
+    isShowText,
+    params,
+    inputJarId,
+    router,
+  ]);
+
+  const handleIsShowInterfaceText = useCallback(() => {
+    setIsShowText((p) => !p);
+  }, []);
 
   const { name, description, jarAmount, jarGoal } = useMemo(
     () => jarData,
@@ -230,7 +283,7 @@ export default function Jar({
 
                   <Button
                     variant="outlined"
-                    onClick={() => setIsShowText((p) => !p)}
+                    onClick={handleIsShowInterfaceText}
                   >
                     {`${isShowText ? "Hide" : "Show"} interface text`}
                   </Button>
@@ -253,6 +306,12 @@ export default function Jar({
                   max={ANIMATION_DURATION_CONFIGURATION.max}
                 />
               </Box>
+            </Box>
+          </Panel>
+
+          <Panel title="Streaming link">
+            <Box sx={{ maxWidth: "500px" }}>
+              {/* {"http://localhost:3004/jars/2JbpBYkhMv" + makeSearchParams} */}
             </Box>
           </Panel>
         </Stack>

@@ -11,7 +11,16 @@ export const LOCAL_STORAGE_KEYS = {
   fontColor: "font-color",
   bcColor: "background-color",
   bcColorIsTransparent: "background-color-is-transparent",
+  isShowText: "is-show-text",
   avatarAnimationDuration: "avatar-animation-duration",
+};
+
+export const SEARCH_PARAMS = {
+  isShowText: "is-show-text",
+  isTranparent: "is-background-transparent",
+  bcColor: "background-color",
+  fontColor: "font-color",
+  animationDuration: "animation-duration",
 };
 
 export const RE_FETCH_INTERVAL =
