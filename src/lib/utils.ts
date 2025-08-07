@@ -79,3 +79,9 @@ export const setCookie = (cname: string, cvalue: string, exdays = 365) => {
   const expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 };
+
+export const getWindowLocationOrigin = () => {
+  if (typeof window === "undefined") return "";
+
+  return window.location.origin;
+};

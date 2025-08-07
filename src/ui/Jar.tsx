@@ -1,12 +1,23 @@
 "use client";
 
 import { fetchWidgetJarInfo } from "@/lib/hooks";
-import { write, read, debounce, setCookie } from "@/lib/utils";
+import {
+  write,
+  read,
+  debounce,
+  setCookie,
+  getWindowLocationOrigin,
+} from "@/lib/utils";
 import { Footer } from "@/ui/Footer";
 import { Header } from "@/ui/Header";
 import { Model } from "@/ui/Model";
 import { Scene } from "@/ui/Scene";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { StatusBar } from "@/ui/StatusBar";
@@ -44,6 +55,7 @@ export default function Jar({
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const [animationIndex, setAnimationIndex] = useState(ANIMATIONS.idle);
 
@@ -203,6 +215,8 @@ export default function Jar({
     setIsShowText((p) => !p);
   }, []);
 
+  const windowLocationOrigin = useMemo(() => getWindowLocationOrigin(), []);
+
   const { name, description, jarAmount, jarGoal } = useMemo(
     () => jarData,
     [jarData]
@@ -228,7 +242,7 @@ export default function Jar({
           sx={{ padding: "16px 8px" }}
           className={inter.className}
         >
-          <Panel title="Current jar">
+          <Panel title="Поточний збір">
             <Stack
               direction="row"
               sx={{
@@ -311,7 +325,7 @@ export default function Jar({
 
           <Panel title="Streaming link">
             <Box sx={{ maxWidth: "500px" }}>
-              {/* {"http://localhost:3004/jars/2JbpBYkhMv" + makeSearchParams} */}
+              {windowLocationOrigin + pathname + makeSearchParams}
             </Box>
           </Panel>
         </Stack>
