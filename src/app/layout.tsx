@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { rubikMonoOne } from "@/lib/fonts";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body className={rubikMonoOne.className}>
         <AppRouterCacheProvider>
           {children}
+          <GoogleAnalytics gaId="G-BZH05L6RN2" />
           <Analytics />
           <SpeedInsights />
         </AppRouterCacheProvider>
