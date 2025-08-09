@@ -1,6 +1,6 @@
 "use client";
 
-import { useIsClient } from "@/lib/useHooks";
+import { Box } from "@mui/material";
 import { FC, memo } from "react";
 
 interface HeaderProps {
@@ -11,53 +11,51 @@ interface HeaderProps {
 }
 
 export const Header: FC<HeaderProps> = memo(
-  ({ name, jarAmount, jarGoal, interfaceFontColor }) => {
-    const isClient = useIsClient();
-
-    const headerStyle = {
-      display: "grid",
-      justifyContent: "center",
-      gap: "16px",
-      color: interfaceFontColor,
-    };
-
-    const nameStyle = {
-      fontSize: "40px",
-      textAlign: "center" as const,
-    };
-
-    const jarContainerStyle = {
-      display: "flex",
-      justifyContent: "space-around",
-      gap: "32px",
-    };
-
-    const jarItemStyle = {
-      textAlign: "center" as const,
-    };
-
-    if (!isClient) {
-      return <div />;
-    }
-
-    return (
-      <div style={headerStyle}>
-        <div style={nameStyle}>{name}</div>
-        {jarAmount && jarGoal ? (
-          <div style={jarContainerStyle}>
-            <div style={jarItemStyle}>
-              <div>Rised</div>
-              <div>{jarAmount / 100}</div>
-            </div>
-            <div style={jarItemStyle}>
-              <div>Goal</div>
-              <div>{jarGoal / 100}</div>
-            </div>
-          </div>
-        ) : null}
-      </div>
-    );
-  }
+  ({ name, jarAmount, jarGoal, interfaceFontColor }) => (
+    <Box
+      sx={{
+        display: "grid",
+        justifyContent: "center",
+        gap: "16px",
+        color: interfaceFontColor,
+      }}
+    >
+      <Box
+        sx={{
+          fontSize: "40px",
+          textAlign: "center",
+        }}
+      >
+        {name}
+      </Box>
+      {jarAmount ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            gap: "32px",
+          }}
+        >
+          <Box
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            <div>Rised</div>
+            <div>{jarAmount / 100}</div>
+          </Box>
+          <Box
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            <div>Goal</div>
+            <div>{jarGoal ? jarGoal / 100 : 0}</div>
+          </Box>
+        </Box>
+      ) : null}
+    </Box>
+  ),
 );
 
 Header.displayName = "Header";

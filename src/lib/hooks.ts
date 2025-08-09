@@ -1,23 +1,32 @@
 import { IS_MOCK_FETCH } from "./constants";
 import { TJar } from "./definitions";
 
-const fetchMock = (): Promise<TJar> =>
-  new Promise((resolve) =>
-    resolve({
-      jarGoal: 1000000,
-      jarAmount: 1,
-      extJarId: "123456789",
-      name: "Mock name",
-      description: "Mock description",
-    })
-  );
+const MOCK = {
+  COUNT: 0,
+  increment() {
+    return this.COUNT++;
+  },
+  fetch(): Promise<TJar> {
+    return new Promise((resolve) => {
+      this.increment();
+
+      return resolve({
+        jarGoal: 1000000,
+        jarAmount: this.COUNT,
+        extJarId: "123456789",
+        name: "Mock name",
+        description: "Mock description",
+      });
+    });
+  },
+};
 
 export const fetchMainJarInfo = async (
   clientId: string,
-  { isMock = IS_MOCK_FETCH } = {}
+  { isMock = IS_MOCK_FETCH } = {},
 ): Promise<TJar> => {
   try {
-    if (isMock) return fetchMock();
+    if (isMock) return MOCK.fetch();
 
     const payload = {
       c: "hello",
@@ -39,7 +48,7 @@ export const fetchMainJarInfo = async (
 
     if (!response.ok) {
       throw new Error(
-        `Server returned ${response.status}: ${response.statusText}`
+        `Server returned ${response.status}: ${response.statusText}`,
       );
     }
 
@@ -56,10 +65,10 @@ export const fetchMainJarInfo = async (
 
 export const fetchWidgetJarInfo = async (
   extJarId: string,
-  { isMock = IS_MOCK_FETCH } = {}
+  { isMock = IS_MOCK_FETCH } = {},
 ): Promise<Omit<TJar, "extJarId">> => {
   try {
-    if (isMock) return fetchMock();
+    if (isMock) return MOCK.fetch();
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
@@ -79,7 +88,7 @@ export const fetchWidgetJarInfo = async (
 
     if (!response.ok) {
       throw new Error(
-        `Server returned ${response.status}: ${response.statusText}`
+        `Server returned ${response.status}: ${response.statusText}`,
       );
     }
 

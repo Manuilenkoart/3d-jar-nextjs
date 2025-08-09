@@ -13,7 +13,7 @@ export const LOCAL_STORAGE_KEYS = {
   bcColorIsTransparent: "background-color-is-transparent",
   isShowText: "is-show-text",
   avatarAnimationDuration: "avatar-animation-duration",
-  hasAvatarShadow:'has-avatar-shadow',
+  hasAvatarShadow: "has-avatar-shadow",
 };
 
 export const SEARCH_PARAMS = {
@@ -22,7 +22,7 @@ export const SEARCH_PARAMS = {
   bcColor: "background-color",
   fontColor: "font-color",
   animationDuration: "animation-duration",
-  hasAvatarShadow:'has-avatar-shadow',
+  hasAvatarShadow: "has-avatar-shadow",
   utmContent: "utm_content",
 };
 
@@ -32,15 +32,16 @@ export const UTM = {
   },
 };
 
-export const RE_FETCH_INTERVAL =
-  process.env.NEXT_PUBLIC_RE_FETCH_INTERVAL &&
-  +process.env.NEXT_PUBLIC_RE_FETCH_INTERVAL >= 15
-    ? +process.env.NEXT_PUBLIC_RE_FETCH_INTERVAL
-    : 15; // Minimum API timeout is 15 seconds
+export const RE_FETCH_INTERVAL = process.env.NEXT_PUBLIC_RE_FETCH_INTERVAL
+  ? +process.env.NEXT_PUBLIC_RE_FETCH_INTERVAL
+  : 30; // Minimum API timeout is 15 seconds
 
 export const ANIMATION_DURATION_CONFIGURATION = {
   min: 10,
   max: RE_FETCH_INTERVAL - 1,
 };
 
-export const IS_MOCK_FETCH = false;
+export const IS_MOCK_FETCH =
+  process.env.NEXT_PUBLIC_IS_MOCK_FETCH === undefined
+    ? false
+    : JSON.parse(process.env.NEXT_PUBLIC_IS_MOCK_FETCH);
