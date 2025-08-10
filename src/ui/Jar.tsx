@@ -12,12 +12,7 @@ import { Footer } from "@/ui/Footer";
 import { Header } from "@/ui/Header";
 import { Model } from "@/ui/Model";
 import { Scene } from "@/ui/Scene";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
   ChangeEvent,
@@ -58,11 +53,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 type Props = {
-  mainJarInfo: TJar;
+  clientId: string;
 };
-function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
+function Jar({ clientId }: Props) {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
@@ -71,11 +65,18 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
   const [isVisibleSidebar, setIsVisibleSidebar] = useState(false);
 
   const [newJarAmount, setNewJarAmount] = useState(0);
-  const [jarData, setJarData] = useState(() => restMainJarInfo);
+  const [jarData, setJarData] = useState<TJar>({
+    description: "",
+    extJarId: "",
+    jarAmount: 0,
+    jarGoal: 0,
+    name: "",
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
-  const [inputJarId, setInputJarId] = useState(() => params.id);
+  const [inputJarId, setInputJarId] = useState(clientId);
 
   const isWidgetMode =
     searchParams.get(SEARCH_PARAMS.utmContent) === UTM.content.isWidgetMode;
@@ -97,6 +98,40 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
   });
 
   const [isTransparent, setIsTransparent] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    fetch(`/api/jar?clientId=${clientId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const keys = Object.keys(data);
+
+        if (
+          ["description", "jarGoal", "jarAmount", "name", "extJarId"].every(
+            (k) => keys.includes(k),
+          )
+        ) {
+          setJarData(data);
+          return;
+        }
+
+        if (keys.includes("errCode") && data.errCode === "7014") {
+          setFetchError("Схоже, банки з таким ID немає");
+          setIsVisibleSidebar(true);
+          return;
+        }
+
+        if (keys.includes("errCode") && data.errCode === "TMR") {
+          setFetchError("Too many requests :(");
+          return;
+        }
+      })
+      .catch((err) =>
+        setFetchError(err instanceof Error ? err.message : String(err)),
+      )
+      .finally(() => setIsLoading(false));
+  }, []);
 
   useEffect(() => {
     const param = searchParams.get(SEARCH_PARAMS.isTranparent);
@@ -152,7 +187,7 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
 
   const debounceAnimation = debounce(
     setAnimationIndex,
-    1000 * animationDuration
+    1000 * animationDuration,
   );
 
   useEffect(() => {
@@ -169,14 +204,16 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
   const makefetchJarData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await fetchWidgetJarInfo(extJarId);
+      if (!jarData.extJarId) return;
+
+      const data = await fetchWidgetJarInfo(jarData.extJarId);
       setJarData((prev) => ({ ...prev, ...data }));
     } catch (err) {
       setFetchError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsLoading(false);
     }
-  }, [extJarId]);
+  }, [jarData.extJarId]);
 
   useEffect(() => {
     const intervalId = setInterval(makefetchJarData, 1000 * RE_FETCH_INTERVAL);
@@ -212,7 +249,7 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
       ]
         .map(
           ({ name, value }, idx) =>
-            `${idx === 0 ? `?${SEARCH_PARAMS.utmContent}=${UTM.content.isWidgetMode}&` : "&"}${name}=${value}`
+            `${idx === 0 ? `?${SEARCH_PARAMS.utmContent}=${UTM.content.isWidgetMode}&` : "&"}${name}=${value}`,
         )
         .join(""),
     [
@@ -222,7 +259,7 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
       interfaceFontColor,
       isShowText,
       isTransparent,
-    ]
+    ],
   );
 
   const handleHideSideBar = useCallback(() => {
@@ -234,7 +271,7 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
     write(LOCAL_STORAGE_KEYS.isShowText, isShowText);
     write(LOCAL_STORAGE_KEYS.hasAvatarShadow, hasAvatarShadow);
 
-    if (params && params.id !== inputJarId) {
+    if (clientId !== inputJarId) {
       setCookie(COOKIE_KEYS.jarId, inputJarId);
 
       router.push(`/jars/${inputJarId}`);
@@ -245,7 +282,7 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
     isTransparent,
     isShowText,
     hasAvatarShadow,
-    params,
+    clientId,
     inputJarId,
     router,
   ]);
@@ -262,7 +299,7 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
 
   const { name, description, jarAmount, jarGoal } = useMemo(
     () => jarData,
-    [jarData]
+    [jarData],
   );
 
   return (
@@ -302,37 +339,40 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
           </Stack>
 
           <Panel title="Поточний збір">
-            <Stack
-              direction="row"
-              sx={{
-                alignItems: "center",
-                gap: "16px",
-              }}
-            >
+            <>
               <Stack
                 direction="row"
                 sx={{
                   alignItems: "center",
+                  gap: "16px",
                 }}
               >
-                <p>https://send.monobank.ua/jar/</p>
-                <TextField
-                  id="outlined-basic"
-                  label="jar id"
-                  variant="outlined"
-                  value={inputJarId}
-                  onChange={(e) => setInputJarId(e.target.value)}
-                />
-              </Stack>
+                <Stack
+                  direction="row"
+                  sx={{
+                    alignItems: "center",
+                  }}
+                >
+                  <p>https://send.monobank.ua/jar/</p>
+                  <TextField
+                    id="outlined-basic"
+                    label="jar id"
+                    variant="outlined"
+                    value={inputJarId}
+                    onChange={(e) => setInputJarId(e.target.value)}
+                  />
+                </Stack>
 
-              <Fab
-                color="primary"
-                disabled={inputJarId.length < 7}
-                onClick={() => handleHideSideBar()}
-              >
-                GO
-              </Fab>
-            </Stack>
+                <Fab
+                  color="primary"
+                  disabled={inputJarId.length < 7}
+                  onClick={() => handleHideSideBar()}
+                >
+                  GO
+                </Fab>
+              </Stack>
+              <Box color={"red"}>{fetchError}</Box>
+            </>
           </Panel>
 
           <Panel title="Interface">
@@ -415,7 +455,7 @@ function Jar({ mainJarInfo: { extJarId, ...restMainJarInfo } }: Props) {
                 variant="outlined"
                 onClick={() =>
                   navigator.clipboard.writeText(
-                    windowLocationOrigin + pathname + makeSearchParams
+                    windowLocationOrigin + pathname + makeSearchParams,
                   )
                 }
               >

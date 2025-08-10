@@ -46,15 +46,7 @@ export const fetchMainJarInfo = async (
       body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `Server returned ${response.status}: ${response.statusText}`,
-      );
-    }
-
     const data = (await response.json()) ?? {};
-
-    if (!data) throw new Error("Missing jar ID in server response");
 
     return data;
   } catch (error) {

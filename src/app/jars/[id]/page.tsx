@@ -1,4 +1,3 @@
-import { fetchMainJarInfo } from "@/lib/hooks";
 import Jar from "@/ui/Jar";
 import { redirect } from "next/navigation";
 
@@ -11,7 +10,5 @@ export default async function Page({
 
   if (!id) return redirect("/");
 
-  const mainJarInfo = await fetchMainJarInfo(id);
-
-  return <Jar mainJarInfo={mainJarInfo} />;
+  return <Jar clientId={id} />;
 }
