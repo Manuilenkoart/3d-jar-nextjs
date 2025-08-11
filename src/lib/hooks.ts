@@ -98,3 +98,6 @@ export const fetchWidgetJarInfo = async (
     throw new Error(error instanceof Error ? error.message : String(error));
   }
 };
+
+export const fetcher = <T>(...args: [string, RequestInit?]): Promise<T> =>
+  fetch(...args).then((res) => res.json() as Promise<T>);

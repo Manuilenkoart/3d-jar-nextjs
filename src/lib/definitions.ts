@@ -3,5 +3,6 @@ export type TJar = {
   jarGoal: number;
   jarAmount: number;
   name: string;
-  extJarId: string;
+  extJarId?: string;
+  errCode?: string;
 };

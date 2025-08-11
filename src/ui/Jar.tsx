@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchWidgetJarInfo } from "@/lib/hooks";
+import { fetcher, fetchWidgetJarInfo } from "@/lib/hooks";
 import {
   write,
   read,
@@ -51,6 +51,7 @@ import {
   UTM,
 } from "@/lib/constants";
 import CloseIcon from "@mui/icons-material/Close";
+import useSWR from "swr";
 
 type Props = {
   clientId: string;
@@ -64,6 +65,14 @@ function Jar({ clientId }: Props) {
 
   const [isVisibleSidebar, setIsVisibleSidebar] = useState(false);
 
+  const {
+    data: mainJarInfo,
+    error: mainJarInfoError,
+    isLoading: mainJarInfoIsLoading,
+  } = useSWR<TJar>(`/api/jar?clientId=${clientId}`, fetcher, {
+    revalidateOnFocus: false,
+  });
+
   const [newJarAmount, setNewJarAmount] = useState(0);
   const [jarData, setJarData] = useState<TJar>({
     description: "",
@@ -73,8 +82,8 @@ function Jar({ clientId }: Props) {
     name: "",
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [fetchError, setFetchError] = useState("");
+  const [isLoading, setIsLoading] = useState(mainJarInfoIsLoading);
+  const [fetchError, setFetchError] = useState(mainJarInfoError);
 
   const [inputJarId, setInputJarId] = useState(clientId);
 
@@ -98,40 +107,6 @@ function Jar({ clientId }: Props) {
   });
 
   const [isTransparent, setIsTransparent] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    fetch(`/api/jar?clientId=${clientId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const keys = Object.keys(data);
-
-        if (
-          ["description", "jarGoal", "jarAmount", "name", "extJarId"].every(
-            (k) => keys.includes(k),
-          )
-        ) {
-          setJarData(data);
-          return;
-        }
-
-        if (keys.includes("errCode") && data.errCode === "7014") {
-          setFetchError("Схоже, банки з таким ID немає");
-          setIsVisibleSidebar(true);
-          return;
-        }
-
-        if (keys.includes("errCode") && data.errCode === "TMR") {
-          setFetchError("Too many requests :(");
-          return;
-        }
-      })
-      .catch((err) =>
-        setFetchError(err instanceof Error ? err.message : String(err)),
-      )
-      .finally(() => setIsLoading(false));
-  }, []);
 
   useEffect(() => {
     const param = searchParams.get(SEARCH_PARAMS.isTranparent);
@@ -201,19 +176,53 @@ function Jar({ clientId }: Props) {
     }
   }, [debounceAnimation, jarData, newJarAmount]);
 
+  const checkResponse = useCallback(
+    (jar: TJar) => {
+      const keys = Object.keys(jar);
+
+      if (
+        ["description", "jarGoal", "jarAmount", "name"].every((k) =>
+          keys.includes(k),
+        )
+      ) {
+        setJarData((prev) => ({ ...prev, ...jar }));
+        return;
+      }
+
+      if (keys.includes("errCode")) {
+        if (jar.errCode === "7014") {
+          setFetchError("Схоже, банки з таким ID не існує");
+          setIsVisibleSidebar(true);
+          return;
+        }
+        if (jar.errCode === "TMR") {
+          setFetchError("Забагато запитів. Спробуйте пізніше.");
+          return;
+        }
+      }
+    },
+    [setJarData, setFetchError, setIsVisibleSidebar],
+  );
+
+  useEffect(() => {
+    if (mainJarInfo) return checkResponse(mainJarInfo);
+
+    setIsLoading(false);
+  }, [mainJarInfo, checkResponse]);
+
   const makefetchJarData = useCallback(async () => {
     setIsLoading(true);
     try {
       if (!jarData.extJarId) return;
 
       const data = await fetchWidgetJarInfo(jarData.extJarId);
-      setJarData((prev) => ({ ...prev, ...data }));
+      checkResponse(data);
     } catch (err) {
       setFetchError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsLoading(false);
     }
-  }, [jarData.extJarId]);
+  }, [jarData.extJarId, checkResponse]);
 
   useEffect(() => {
     const intervalId = setInterval(makefetchJarData, 1000 * RE_FETCH_INTERVAL);
