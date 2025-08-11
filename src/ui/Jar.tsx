@@ -193,15 +193,18 @@ function Jar({ clientId }: Props) {
         if (jar.errCode === "7014") {
           setFetchError("Схоже, банки з таким ID не існує");
           setIsVisibleSidebar(true);
+          console.error(`${clientId}: errCode - 7014`);
           return;
         }
         if (jar.errCode === "TMR") {
           setFetchError("Забагато запитів. Спробуйте пізніше.");
+          console.error(`${clientId}: errCode - TMR`);
+
           return;
         }
       }
     },
-    [setJarData, setFetchError, setIsVisibleSidebar],
+    [clientId],
   );
 
   useEffect(() => {
