@@ -48,7 +48,7 @@ export const JarProgressBar: FC<Props> = memo(
           color: interfaceFontColor,
         }}
       >
-        ${amount}
+        <Currency value={amount} />
         <Box
           sx={{
             width: "70%",
@@ -71,15 +71,29 @@ export const JarProgressBar: FC<Props> = memo(
             %{percent}
           </Box>
           {isFixAmount ? (
-            <Box sx={{ position: "absolute", bottom: "-25px", right: "0" }}>
-              +${adjustedAmount}
-            </Box>
+            <Stack
+              direction={"row"}
+              sx={{
+                position: "absolute",
+                bottom: "-25px",
+                right: "0",
+              }}
+            >
+              +{adjustedAmount}
+            </Stack>
           ) : null}
         </Box>
-        ${goal}
+        <Currency value={goal} />
       </Stack>
     );
   },
 );
 
 JarProgressBar.displayName = "JarProgressBar";
+
+const Currency: FC<{ value: number }> = ({ value }) => (
+  <Stack direction={"row"} sx={{ alignItems: "baseline" }}>
+    <p style={{ fontSize: "10px" }}>&#x20b4;</p>
+    <p>{value}</p>
+  </Stack>
+);

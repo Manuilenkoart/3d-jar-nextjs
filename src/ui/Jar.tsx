@@ -231,7 +231,7 @@ function Jar({ clientId }: Props) {
         : false;
       const fixAmount = fixAmountParam
         ? +fixAmountParam
-        : mainJarInfo.jarAmount;
+        : (mainJarInfo.jarAmount ?? 0);
 
       setProgressBar(() => ({
         isShow,
@@ -422,7 +422,7 @@ function Jar({ clientId }: Props) {
           </Stack>
 
           <Panel title="Поточний збір">
-            <>
+            <Stack spacing={1}>
               <Stack
                 direction="row"
                 sx={{
@@ -454,12 +454,12 @@ function Jar({ clientId }: Props) {
                   GO
                 </Fab>
               </Stack>
-              <Box color={"red"}>{fetchError}</Box>
-            </>
+              <h3 style={{ color: "red" }}>{fetchError}</h3>
+            </Stack>
           </Panel>
 
           <Panel title="Interface">
-            <Stack spacing={0.75}>
+            <Stack spacing={1}>
               <Box
                 sx={{
                   display: "flex",
@@ -519,7 +519,7 @@ function Jar({ clientId }: Props) {
           <Panel title="Progress bar" isShow={progressBar.isShow}>
             <Stack
               direction="row"
-              spacing={0.75}
+              spacing={1}
               sx={{ justifyContent: "space-between" }}
             >
               <FormControlLabel
@@ -547,10 +547,10 @@ function Jar({ clientId }: Props) {
           </Panel>
 
           <Panel title="Avatar">
-            <Box sx={{ display: "grid", gap: "16px" }}>
+            <Stack spacing={1}>
               <Box sx={{ display: "flex", gap: "16px", alignItems: "center" }}>
                 <Box sx={{ flex: 1 }}>
-                  Animation duration: {animationDuration}s
+                  Тривалість анімації: {animationDuration}сек
                 </Box>
                 <Slider
                   sx={{ flex: 1 }}
@@ -568,9 +568,9 @@ function Jar({ clientId }: Props) {
                     onChange={handleAvatarShadow}
                   />
                 }
-                label="Show shadow"
+                label="Тінь аватара"
               />
-            </Box>
+            </Stack>
           </Panel>
 
           <Panel
