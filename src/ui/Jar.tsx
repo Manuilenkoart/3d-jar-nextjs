@@ -103,14 +103,16 @@ function Jar({ clientId }: Props) {
     fixAmount: 0,
   }));
 
-  const [interfaceFontColor, setInterfaceFontColor] = useState(() => {
+  const [interfaceFontColor, setInterfaceFontColor] = useState("#000000");
+  useEffect(() => {
     const param = searchParams.get(SEARCH_PARAMS.fontColor);
     const storage = read(LOCAL_STORAGE_KEYS.fontColor);
 
     const color = param ? `#${param}` : null;
+    setInterfaceFontColor(() => color ?? storage ?? "#000000");
 
-    return color ?? storage ?? "#000000";
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [isTransparent, setIsTransparent] = useState(true);
 
@@ -215,12 +217,33 @@ function Jar({ clientId }: Props) {
 
   useEffect(() => {
     if (mainJarInfo) {
-      checkResponse(mainJarInfo);
+      const isShowParam = searchParams.get(SEARCH_PARAMS.progressBar.isShow);
+      const isFixAmountParam = searchParams.get(
+        SEARCH_PARAMS.progressBar.isFixAmount,
+      );
+      const fixAmountParam = searchParams.get(
+        SEARCH_PARAMS.progressBar.fixAmount,
+      );
 
-      setProgressBar((prev) => ({
-        ...prev,
-        fixAmount: mainJarInfo.jarAmount,
+      const isShow = isShowParam ? (JSON.parse(isShowParam) as boolean) : false;
+      const isFixAmount = isFixAmountParam
+        ? (JSON.parse(isFixAmountParam) as boolean)
+        : false;
+      const fixAmount = fixAmountParam
+        ? +fixAmountParam
+        : mainJarInfo.jarAmount;
+
+      setProgressBar(() => ({
+        isShow,
+        isFixAmount,
+        fixAmount,
       }));
+    }
+  }, [mainJarInfo, searchParams]);
+
+  useEffect(() => {
+    if (mainJarInfo) {
+      checkResponse(mainJarInfo);
     }
 
     setIsLoading(false);
@@ -294,6 +317,15 @@ function Jar({ clientId }: Props) {
         { name: SEARCH_PARAMS.bcColor, value: bcColor.slice(1) },
         { name: SEARCH_PARAMS.animationDuration, value: animationDuration },
         { name: SEARCH_PARAMS.hasAvatarShadow, value: hasAvatarShadow },
+        { name: SEARCH_PARAMS.progressBar.isShow, value: progressBar.isShow },
+        {
+          name: SEARCH_PARAMS.progressBar.isFixAmount,
+          value: progressBar.isFixAmount,
+        },
+        {
+          name: SEARCH_PARAMS.progressBar.fixAmount,
+          value: progressBar.fixAmount,
+        },
       ]
         .map(
           ({ name, value }, idx) =>
@@ -307,6 +339,9 @@ function Jar({ clientId }: Props) {
       interfaceFontColor,
       isShowText,
       isTransparent,
+      progressBar.fixAmount,
+      progressBar.isFixAmount,
+      progressBar.isShow,
     ],
   );
 

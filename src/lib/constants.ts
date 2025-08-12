@@ -24,6 +24,11 @@ export const SEARCH_PARAMS = {
   animationDuration: "animation-duration",
   hasAvatarShadow: "has-avatar-shadow",
   utmContent: "utm_content",
+  progressBar: {
+    isShow: "progress-bar-is-show",
+    isFixAmount: "progress-bar-is-fix-amount",
+    fixAmount: "progress-bar-fix-amount",
+  },
 };
 
 export const UTM = {
