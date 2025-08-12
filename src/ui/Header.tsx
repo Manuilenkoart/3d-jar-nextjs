@@ -39,16 +39,16 @@ export const Header: FC<HeaderProps> = memo(
               textAlign: "center",
             }}
           >
-            <div>Rised</div>
-            <div>{jarAmount / 100}</div>
+            <div>Зібрано</div>
+            <div>{jarAmount}</div>
           </Box>
           <Box
             sx={{
               textAlign: "center",
             }}
           >
-            <div>Goal</div>
-            <div>{jarGoal / 100}</div>
+            <div>Ціль</div>
+            <div>{jarGoal}</div>
           </Box>
         </Box>
       ) : null}

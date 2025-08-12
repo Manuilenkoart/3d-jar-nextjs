@@ -5,9 +5,10 @@ type Props = {
   title: string;
   children: ReactNode;
   actions?: ReactNode;
+  isShow?: boolean;
 };
-const Panel: FC<Props> = ({ title, children, actions }) => {
-  return (
+const Panel: FC<Props> = ({ title, children, actions, isShow = true }) => {
+  return isShow ? (
     <Stack sx={{ border: "1px solid #cfd8dc", borderRadius: "4px" }}>
       <Stack
         direction="row"
@@ -23,7 +24,7 @@ const Panel: FC<Props> = ({ title, children, actions }) => {
       </Stack>
       <Box sx={{ padding: "8px" }}>{children}</Box>
     </Stack>
-  );
+  ) : null;
 };
 
 export default memo(Panel);

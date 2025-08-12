@@ -97,6 +97,12 @@ function Jar({ clientId }: Props) {
     return param ? (JSON.parse(param) as boolean) : (storage ?? true);
   });
 
+  const [progressBar, setProgressBar] = useState(() => ({
+    isShow: false,
+    isFixAmount: false,
+    fixAmount: 0,
+  }));
+
   const [interfaceFontColor, setInterfaceFontColor] = useState(() => {
     const param = searchParams.get(SEARCH_PARAMS.fontColor);
     const storage = read(LOCAL_STORAGE_KEYS.fontColor);
@@ -208,7 +214,14 @@ function Jar({ clientId }: Props) {
   );
 
   useEffect(() => {
-    if (mainJarInfo) return checkResponse(mainJarInfo);
+    if (mainJarInfo) {
+      checkResponse(mainJarInfo);
+
+      setProgressBar((prev) => ({
+        ...prev,
+        fixAmount: mainJarInfo.jarAmount,
+      }));
+    }
 
     setIsLoading(false);
   }, [mainJarInfo, checkResponse]);
@@ -248,6 +261,29 @@ function Jar({ clientId }: Props) {
 
     setIsTransparent(isChecked);
   }, []);
+
+  const handleProgressBar = useCallback(
+    (value: boolean | number, field: keyof typeof progressBar) => {
+      switch (field) {
+        case "isShow":
+        case "isFixAmount":
+          setProgressBar((prev) => ({ ...prev, [field]: value }));
+          break;
+
+        case "fixAmount": {
+          setProgressBar((prev) => ({
+            ...prev,
+            fixAmount: (value as number) * 100,
+          }));
+          break;
+        }
+
+        default:
+          break;
+      }
+    },
+    [],
+  );
 
   const makeSearchParams = useMemo(
     () =>
@@ -388,7 +424,7 @@ function Jar({ clientId }: Props) {
           </Panel>
 
           <Panel title="Interface">
-            <Box sx={{ display: "grid", gap: "12px" }}>
+            <Stack spacing={0.75}>
               <Box
                 sx={{
                   display: "flex",
@@ -430,7 +466,49 @@ function Jar({ clientId }: Props) {
                   </Button>
                 </>
               ) : null}
-            </Box>
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={progressBar.isShow}
+                    onChange={(e) =>
+                      handleProgressBar(e.target.checked, "isShow")
+                    }
+                  />
+                }
+                label="Progress bar"
+              />
+            </Stack>
+          </Panel>
+
+          <Panel title="Progress bar" isShow={progressBar.isShow}>
+            <Stack
+              direction="row"
+              spacing={0.75}
+              sx={{ justifyContent: "space-between" }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={progressBar.isFixAmount}
+                    onChange={(e) =>
+                      handleProgressBar(e.target.checked, "isFixAmount")
+                    }
+                  />
+                }
+                label="Зафіксувати суму"
+              />
+
+              <TextField
+                id="outlined-basic"
+                label="Відлік від суми"
+                variant="outlined"
+                defaultValue={progressBar.fixAmount / 100}
+                onChange={(e) => {
+                  handleProgressBar(+e.target.value, "fixAmount");
+                }}
+              />
+            </Stack>
           </Panel>
 
           <Panel title="Avatar">
@@ -491,11 +569,11 @@ function Jar({ clientId }: Props) {
         {isShowText ? (
           <Header
             {...{
-              jarGoal,
-              jarAmount,
               name,
               interfaceFontColor,
             }}
+            jarGoal={jarGoal / 100}
+            jarAmount={jarAmount / 100}
           />
         ) : null}
 
@@ -508,8 +586,12 @@ function Jar({ clientId }: Props) {
         </Scene>
 
         <Stack direction="column" sx={{ gap: "16px" }}>
-          {false ? (
-            <JarProgressBar {...{ jarAmount, jarGoal, interfaceFontColor }} />
+          {progressBar.isShow ? (
+            <JarProgressBar
+              {...{ jarAmount, jarGoal, interfaceFontColor }}
+              fixedAmount={progressBar.fixAmount}
+              isFixAmount={progressBar.isFixAmount}
+            />
           ) : null}
 
           {isShowText ? (

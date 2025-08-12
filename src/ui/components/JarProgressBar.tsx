@@ -2,21 +2,40 @@
 
 import { TJar } from "@/lib/definitions";
 import { Box, Stack } from "@mui/material";
-import { FC, memo } from "react";
+import { FC, memo, useMemo } from "react";
 
 type Props = Pick<TJar, "jarAmount" | "jarGoal"> & {
-  fixedAmount?: number;
   interfaceFontColor: string;
+  fixedAmount?: number;
+  isFixAmount?: boolean;
 };
 
 export const JarProgressBar: FC<Props> = memo(
-  ({ jarAmount, jarGoal, interfaceFontColor, fixedAmount = 0 }) => {
-    const amount = jarAmount / 100;
-    const goal = jarGoal / 100;
+  ({
+    jarAmount,
+    jarGoal,
+    interfaceFontColor,
+    fixedAmount = 0,
+    isFixAmount = false,
+  }) => {
+    const amount = useMemo(() => jarAmount / 100, [jarAmount]);
+    const goal = useMemo(() => jarGoal / 100, [jarGoal]);
 
-    const percent = Math.floor((amount / goal) * 100) || 0;
-    const adjustedAmount = amount - fixedAmount;
-    const percentageIndicatorWidth = percent <= 100 ? percent : 100;
+    const percent = useMemo(
+      () => Math.floor((jarAmount / jarGoal) * 100) || 0,
+      [jarAmount, jarGoal],
+    );
+
+    const adjustedAmount = useMemo(
+      () => (jarAmount - fixedAmount) / 100,
+      [fixedAmount, jarAmount],
+    );
+
+    const percentageIndicatorWidth = useMemo(
+      () => (percent <= 100 ? percent : 100),
+      [percent],
+    );
+
     return (
       <Stack
         direction="row"
@@ -51,7 +70,7 @@ export const JarProgressBar: FC<Props> = memo(
           <Box sx={{ position: "absolute", top: "-25px", left: "0" }}>
             %{percent}
           </Box>
-          {adjustedAmount ? (
+          {isFixAmount ? (
             <Box sx={{ position: "absolute", bottom: "-25px", right: "0" }}>
               +${adjustedAmount}
             </Box>
