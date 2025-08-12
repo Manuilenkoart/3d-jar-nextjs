@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
+
 import Jar from "@/ui/Jar";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Танцюючий аватар",
+  description:
+    "Tanok – інструмент пітримки зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!",
+};
 
 export default async function Page({
   params,
