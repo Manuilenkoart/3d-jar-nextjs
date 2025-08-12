@@ -4,14 +4,14 @@ import { TJar } from "./definitions";
 const MOCK = {
   COUNT: 0,
   increment() {
-    return this.COUNT++;
+    return (this.COUNT += 1000);
   },
   fetch(): Promise<TJar> {
     return new Promise((resolve) => {
       this.increment();
 
       return resolve({
-        jarGoal: 1000000,
+        jarGoal: 10000,
         jarAmount: this.COUNT,
         extJarId: "123456789",
         name: "Mock name",

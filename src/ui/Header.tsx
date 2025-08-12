@@ -1,14 +1,12 @@
 "use client";
 
+import { TJar } from "@/lib/definitions";
 import { Box } from "@mui/material";
 import { FC, memo } from "react";
 
-interface HeaderProps {
-  name: string;
-  jarAmount?: number;
-  jarGoal?: number;
+type HeaderProps = Pick<TJar, "name" | "jarAmount" | "jarGoal"> & {
   interfaceFontColor?: string;
-}
+};
 
 export const Header: FC<HeaderProps> = memo(
   ({ name, jarAmount, jarGoal, interfaceFontColor }) => (
@@ -50,7 +48,7 @@ export const Header: FC<HeaderProps> = memo(
             }}
           >
             <div>Goal</div>
-            <div>{jarGoal ? jarGoal / 100 : 0}</div>
+            <div>{jarGoal / 100}</div>
           </Box>
         </Box>
       ) : null}

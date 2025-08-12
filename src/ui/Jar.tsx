@@ -37,7 +37,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { Panel } from "./components";
+import { JarProgressBar, Panel } from "./components";
 import { Picker } from "./Picker";
 import { inter } from "@/lib/fonts";
 import { TJar } from "@/lib/definitions";
@@ -507,9 +507,15 @@ function Jar({ clientId }: Props) {
           />
         </Scene>
 
-        {isShowText ? (
-          <Footer {...{ description, interfaceFontColor }} />
-        ) : null}
+        <Stack direction="column" sx={{ gap: "16px" }}>
+          {false ? (
+            <JarProgressBar {...{ jarAmount, jarGoal, interfaceFontColor }} />
+          ) : null}
+
+          {isShowText ? (
+            <Footer {...{ description, interfaceFontColor }} />
+          ) : null}
+        </Stack>
 
         {isWidgetMode ? null : (
           <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />
