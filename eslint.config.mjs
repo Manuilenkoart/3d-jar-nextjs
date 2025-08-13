@@ -31,8 +31,6 @@ const eslintConfig = [
           ignoreUsingDeclarations: false,
           reportUsedIgnorePattern: false,
         },
-      ],
-      "no-unused-vars": [
         "warn",
         {
           argsIgnorePattern: "^_",
