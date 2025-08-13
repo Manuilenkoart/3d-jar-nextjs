@@ -1,5 +1,5 @@
-import { Stack } from "@mui/material";
-import { FC, memo } from "react";
+import { Stack } from '@mui/material';
+import { FC, memo } from 'react';
 
 type Props = {
   title: string;
@@ -11,7 +11,7 @@ export const Picker: FC<Props> = memo(({ title, value, onChange }) => (
     direction="row"
     spacing={1}
     sx={{
-      alignItems: "center",
+      alignItems: 'center',
     }}
   >
     <label htmlFor={title}>{title}</label>
@@ -26,4 +26,4 @@ export const Picker: FC<Props> = memo(({ title, value, onChange }) => (
   </Stack>
 ));
 
-Picker.displayName = "Picker";
+Picker.displayName = 'Picker';

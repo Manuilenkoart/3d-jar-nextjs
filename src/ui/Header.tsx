@@ -1,59 +1,58 @@
-"use client";
+'use client';
 
-import { TJar } from "@/lib/definitions";
-import { Box } from "@mui/material";
-import { FC, memo } from "react";
+import { Box } from '@mui/material';
+import { FC, memo } from 'react';
 
-type HeaderProps = Pick<TJar, "name" | "jarAmount" | "jarGoal"> & {
+import { TJar } from '@/lib/definitions';
+
+type HeaderProps = Pick<TJar, 'name' | 'jarAmount' | 'jarGoal'> & {
   interfaceFontColor?: string;
 };
 
-export const Header: FC<HeaderProps> = memo(
-  ({ name, jarAmount, jarGoal, interfaceFontColor }) => (
+export const Header: FC<HeaderProps> = memo(({ name, jarAmount, jarGoal, interfaceFontColor }) => (
+  <Box
+    sx={{
+      display: 'grid',
+      justifyContent: 'center',
+      gap: '16px',
+      color: interfaceFontColor,
+    }}
+  >
     <Box
       sx={{
-        display: "grid",
-        justifyContent: "center",
-        gap: "16px",
-        color: interfaceFontColor,
+        fontSize: '40px',
+        textAlign: 'center',
       }}
     >
+      {name}
+    </Box>
+    {jarAmount ? (
       <Box
         sx={{
-          fontSize: "40px",
-          textAlign: "center",
+          display: 'flex',
+          justifyContent: 'space-around',
+          gap: '32px',
         }}
       >
-        {name}
-      </Box>
-      {jarAmount ? (
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-around",
-            gap: "32px",
+            textAlign: 'center',
           }}
         >
-          <Box
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            <div>Зібрано</div>
-            <div>{jarAmount}</div>
-          </Box>
-          <Box
-            sx={{
-              textAlign: "center",
-            }}
-          >
-            <div>Ціль</div>
-            <div>{jarGoal}</div>
-          </Box>
+          <div>Зібрано</div>
+          <div>{jarAmount}</div>
         </Box>
-      ) : null}
-    </Box>
-  ),
-);
+        <Box
+          sx={{
+            textAlign: 'center',
+          }}
+        >
+          <div>Ціль</div>
+          <div>{jarGoal}</div>
+        </Box>
+      </Box>
+    ) : null}
+  </Box>
+));
 
-Header.displayName = "Header";
+Header.displayName = 'Header';

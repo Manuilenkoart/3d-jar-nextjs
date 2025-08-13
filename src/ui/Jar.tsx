@@ -1,30 +1,7 @@
-"use client";
+'use client';
 
-import { fetcher, fetchWidgetJarInfo } from "@/lib/hooks";
-import {
-  write,
-  read,
-  debounce,
-  setCookie,
-  getWindowLocationOrigin,
-} from "@/lib/utils";
-import { Footer } from "@/ui/Footer";
-import { Header } from "@/ui/Header";
-import { Model } from "@/ui/Model";
-import { Scene } from "@/ui/Scene";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
-import {
-  ChangeEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { StatusBar } from "@/ui/StatusBar";
-
-import Menu from "@mui/icons-material/Menu";
+import CloseIcon from '@mui/icons-material/Close';
+import Menu from '@mui/icons-material/Menu';
 import {
   Box,
   Button,
@@ -36,11 +13,11 @@ import {
   Slider,
   Stack,
   TextField,
-} from "@mui/material";
-import { JarProgressBar, Panel } from "./components";
-import { Picker } from "./Picker";
-import { inter } from "@/lib/fonts";
-import { TJar } from "@/lib/definitions";
+} from '@mui/material';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import useSWR from 'swr';
+
 import {
   ANIMATION_DURATION_CONFIGURATION,
   ANIMATIONS,
@@ -49,9 +26,19 @@ import {
   SEARCH_PARAMS,
   RE_FETCH_INTERVAL,
   UTM,
-} from "@/lib/constants";
-import CloseIcon from "@mui/icons-material/Close";
-import useSWR from "swr";
+} from '@/lib/constants';
+import { TJar } from '@/lib/definitions';
+import { inter } from '@/lib/fonts';
+import { fetcher, fetchWidgetJarInfo } from '@/lib/hooks';
+import { write, read, debounce, setCookie, getWindowLocationOrigin } from '@/lib/utils';
+import { Footer } from '@/ui/Footer';
+import { Header } from '@/ui/Header';
+import { Model } from '@/ui/Model';
+import { Scene } from '@/ui/Scene';
+import { StatusBar } from '@/ui/StatusBar';
+
+import { JarProgressBar, Panel } from './components';
+import { Picker } from './Picker';
 
 type Props = {
   clientId: string;
@@ -75,11 +62,11 @@ function Jar({ clientId }: Props) {
 
   const [newJarAmount, setNewJarAmount] = useState(0);
   const [jarData, setJarData] = useState<TJar>({
-    description: "",
-    extJarId: "",
+    description: '',
+    extJarId: '',
     jarAmount: 0,
     jarGoal: 0,
-    name: "",
+    name: '',
   });
 
   const [isLoading, setIsLoading] = useState(mainJarInfoIsLoading);
@@ -87,8 +74,7 @@ function Jar({ clientId }: Props) {
 
   const [inputJarId, setInputJarId] = useState(clientId);
 
-  const isWidgetMode =
-    searchParams.get(SEARCH_PARAMS.utmContent) === UTM.content.isWidgetMode;
+  const isWidgetMode = searchParams.get(SEARCH_PARAMS.utmContent) === UTM.content.isWidgetMode;
 
   const [isShowText, setIsShowText] = useState<boolean>(() => {
     const param = searchParams.get(SEARCH_PARAMS.isShowText);
@@ -103,13 +89,13 @@ function Jar({ clientId }: Props) {
     fixAmount: 0,
   }));
 
-  const [interfaceFontColor, setInterfaceFontColor] = useState("#000000");
+  const [interfaceFontColor, setInterfaceFontColor] = useState('#000000');
   useEffect(() => {
     const param = searchParams.get(SEARCH_PARAMS.fontColor);
     const storage = read(LOCAL_STORAGE_KEYS.fontColor);
 
     const color = param ? `#${param}` : null;
-    setInterfaceFontColor(() => color ?? storage ?? "#000000");
+    setInterfaceFontColor(() => color ?? storage ?? '#000000');
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -134,7 +120,7 @@ function Jar({ clientId }: Props) {
 
     const color = param ? `#${param}` : null;
 
-    return color ?? storage ?? "#ffffff";
+    return color ?? storage ?? '#ffffff';
   });
 
   const [animationDuration, setAnimationDuration] = useState(() => {
@@ -145,11 +131,7 @@ function Jar({ clientId }: Props) {
     const paramNormalized = param ? +param : null;
     const storageNormalized = storage ? +storage : null;
 
-    return (
-      paramNormalized ||
-      storageNormalized ||
-      ANIMATION_DURATION_CONFIGURATION.max
-    );
+    return paramNormalized || storageNormalized || ANIMATION_DURATION_CONFIGURATION.max;
   });
 
   const [hasAvatarShadow, setHasAvatarShadow] = useState(true);
@@ -158,9 +140,7 @@ function Jar({ clientId }: Props) {
     const param = searchParams.get(SEARCH_PARAMS.hasAvatarShadow);
     const storage = read(LOCAL_STORAGE_KEYS.hasAvatarShadow);
 
-    const hasAvatarShadowStorage = param
-      ? JSON.parse(param)
-      : (storage ?? true);
+    const hasAvatarShadowStorage = param ? JSON.parse(param) : (storage ?? true);
 
     if (hasAvatarShadow !== hasAvatarShadowStorage) {
       setHasAvatarShadow(hasAvatarShadowStorage);
@@ -168,10 +148,7 @@ function Jar({ clientId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const debounceAnimation = debounce(
-    setAnimationIndex,
-    1000 * animationDuration,
-  );
+  const debounceAnimation = debounce(setAnimationIndex, 1000 * animationDuration);
 
   useEffect(() => {
     const { jarAmount } = jarData;
@@ -188,24 +165,20 @@ function Jar({ clientId }: Props) {
     (jar: TJar) => {
       const keys = Object.keys(jar);
 
-      if (
-        ["description", "jarGoal", "jarAmount", "name"].every((k) =>
-          keys.includes(k),
-        )
-      ) {
+      if (['description', 'jarGoal', 'jarAmount', 'name'].every((k) => keys.includes(k))) {
         setJarData((prev) => ({ ...prev, ...jar }));
         return;
       }
 
-      if (keys.includes("errCode")) {
-        if (jar.errCode === "7014") {
-          setFetchError("Схоже, банки з таким ID не існує");
+      if (keys.includes('errCode')) {
+        if (jar.errCode === '7014') {
+          setFetchError('Схоже, банки з таким ID не існує');
           setIsVisibleSidebar(true);
           console.error(`${clientId}: errCode - 7014`);
           return;
         }
-        if (jar.errCode === "TMR") {
-          setFetchError("Забагато запитів. Спробуйте пізніше.");
+        if (jar.errCode === 'TMR') {
+          setFetchError('Забагато запитів. Спробуйте пізніше.');
           console.error(`${clientId}: errCode - TMR`);
 
           return;
@@ -218,20 +191,12 @@ function Jar({ clientId }: Props) {
   useEffect(() => {
     if (mainJarInfo) {
       const isShowParam = searchParams.get(SEARCH_PARAMS.progressBar.isShow);
-      const isFixAmountParam = searchParams.get(
-        SEARCH_PARAMS.progressBar.isFixAmount,
-      );
-      const fixAmountParam = searchParams.get(
-        SEARCH_PARAMS.progressBar.fixAmount,
-      );
+      const isFixAmountParam = searchParams.get(SEARCH_PARAMS.progressBar.isFixAmount);
+      const fixAmountParam = searchParams.get(SEARCH_PARAMS.progressBar.fixAmount);
 
       const isShow = isShowParam ? (JSON.parse(isShowParam) as boolean) : false;
-      const isFixAmount = isFixAmountParam
-        ? (JSON.parse(isFixAmountParam) as boolean)
-        : false;
-      const fixAmount = fixAmountParam
-        ? +fixAmountParam
-        : (mainJarInfo.jarAmount ?? 0);
+      const isFixAmount = isFixAmountParam ? (JSON.parse(isFixAmountParam) as boolean) : false;
+      const fixAmount = fixAmountParam ? +fixAmountParam : (mainJarInfo.jarAmount ?? 0);
 
       setProgressBar(() => ({
         isShow,
@@ -285,28 +250,25 @@ function Jar({ clientId }: Props) {
     setIsTransparent(isChecked);
   }, []);
 
-  const handleProgressBar = useCallback(
-    (value: boolean | number, field: keyof typeof progressBar) => {
-      switch (field) {
-        case "isShow":
-        case "isFixAmount":
-          setProgressBar((prev) => ({ ...prev, [field]: value }));
-          break;
+  const handleProgressBar = useCallback((value: boolean | number, field: keyof typeof progressBar) => {
+    switch (field) {
+      case 'isShow':
+      case 'isFixAmount':
+        setProgressBar((prev) => ({ ...prev, [field]: value }));
+        break;
 
-        case "fixAmount": {
-          setProgressBar((prev) => ({
-            ...prev,
-            fixAmount: (value as number) * 100,
-          }));
-          break;
-        }
-
-        default:
-          break;
+      case 'fixAmount': {
+        setProgressBar((prev) => ({
+          ...prev,
+          fixAmount: (value as number) * 100,
+        }));
+        break;
       }
-    },
-    [],
-  );
+
+      default:
+        break;
+    }
+  }, []);
 
   const makeSearchParams = useMemo(
     () =>
@@ -329,9 +291,9 @@ function Jar({ clientId }: Props) {
       ]
         .map(
           ({ name, value }, idx) =>
-            `${idx === 0 ? `?${SEARCH_PARAMS.utmContent}=${UTM.content.isWidgetMode}&` : "&"}${name}=${value}`,
+            `${idx === 0 ? `?${SEARCH_PARAMS.utmContent}=${UTM.content.isWidgetMode}&` : '&'}${name}=${value}`,
         )
-        .join(""),
+        .join(''),
     [
       animationDuration,
       bcColor,
@@ -359,16 +321,7 @@ function Jar({ clientId }: Props) {
 
       router.push(`/jars/${inputJarId}`);
     }
-  }, [
-    animationDuration,
-    bcColor,
-    isTransparent,
-    isShowText,
-    hasAvatarShadow,
-    clientId,
-    inputJarId,
-    router,
-  ]);
+  }, [animationDuration, bcColor, isTransparent, isShowText, hasAvatarShadow, clientId, inputJarId, router]);
 
   const handleIsShowInterfaceText = useCallback(() => {
     setIsShowText((p) => !p);
@@ -380,17 +333,14 @@ function Jar({ clientId }: Props) {
 
   const windowLocationOrigin = useMemo(() => getWindowLocationOrigin(), []);
 
-  const { name, description, jarAmount, jarGoal } = useMemo(
-    () => jarData,
-    [jarData],
-  );
+  const { name, description, jarAmount, jarGoal } = useMemo(() => jarData, [jarData]);
 
   return (
-    <div style={{ backgroundColor: isTransparent ? "transparent" : bcColor }}>
+    <div style={{ backgroundColor: isTransparent ? 'transparent' : bcColor }}>
       {isWidgetMode ? null : (
         <Button
           sx={{
-            position: "absolute",
+            position: 'absolute',
             top: 0,
             left: 0,
             zIndex: 1,
@@ -402,21 +352,27 @@ function Jar({ clientId }: Props) {
         />
       )}
 
-      <Drawer open={isVisibleSidebar} onClose={handleHideSideBar}>
+      <Drawer
+        open={isVisibleSidebar}
+        onClose={handleHideSideBar}
+      >
         <Stack
           spacing={3}
-          sx={{ padding: "16px 8px" }}
+          sx={{ padding: '16px 8px' }}
           className={inter.className}
         >
           <Stack
             direction="row"
             sx={{
-              justifyContent: "space-between",
-              alignItems: "center",
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
             <h2>Налаштування</h2>
-            <IconButton aria-label="close" onClick={() => handleHideSideBar()}>
+            <IconButton
+              aria-label="close"
+              onClick={() => handleHideSideBar()}
+            >
               <CloseIcon />
             </IconButton>
           </Stack>
@@ -426,14 +382,14 @@ function Jar({ clientId }: Props) {
               <Stack
                 direction="row"
                 sx={{
-                  alignItems: "center",
-                  gap: "16px",
+                  alignItems: 'center',
+                  gap: '16px',
                 }}
               >
                 <Stack
                   direction="row"
                   sx={{
-                    alignItems: "center",
+                    alignItems: 'center',
                   }}
                 >
                   <p>https://send.monobank.ua/jar/</p>
@@ -454,7 +410,7 @@ function Jar({ clientId }: Props) {
                   GO
                 </Fab>
               </Stack>
-              <h3 style={{ color: "red" }}>{fetchError}</h3>
+              <h3 style={{ color: 'red' }}>{fetchError}</h3>
             </Stack>
           </Panel>
 
@@ -462,10 +418,10 @@ function Jar({ clientId }: Props) {
             <Stack spacing={1}>
               <Box
                 sx={{
-                  display: "flex",
-                  gap: "8px",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  display: 'flex',
+                  gap: '8px',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                 }}
               >
                 <Picker
@@ -497,7 +453,7 @@ function Jar({ clientId }: Props) {
                     variant="outlined"
                     onClick={handleIsShowInterfaceText}
                   >
-                    {`${isShowText ? "Hide" : "Show"} interface text`}
+                    {`${isShowText ? 'Hide' : 'Show'} interface text`}
                   </Button>
                 </>
               ) : null}
@@ -506,9 +462,7 @@ function Jar({ clientId }: Props) {
                 control={
                   <Checkbox
                     checked={progressBar.isShow}
-                    onChange={(e) =>
-                      handleProgressBar(e.target.checked, "isShow")
-                    }
+                    onChange={(e) => handleProgressBar(e.target.checked, 'isShow')}
                   />
                 }
                 label="Progress bar"
@@ -516,19 +470,20 @@ function Jar({ clientId }: Props) {
             </Stack>
           </Panel>
 
-          <Panel title="Progress bar" isShow={progressBar.isShow}>
+          <Panel
+            title="Progress bar"
+            isShow={progressBar.isShow}
+          >
             <Stack
               direction="row"
               spacing={1}
-              sx={{ justifyContent: "space-between" }}
+              sx={{ justifyContent: 'space-between' }}
             >
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={progressBar.isFixAmount}
-                    onChange={(e) =>
-                      handleProgressBar(e.target.checked, "isFixAmount")
-                    }
+                    onChange={(e) => handleProgressBar(e.target.checked, 'isFixAmount')}
                   />
                 }
                 label="Зафіксувати суму"
@@ -540,7 +495,7 @@ function Jar({ clientId }: Props) {
                 variant="outlined"
                 defaultValue={progressBar.fixAmount / 100}
                 onChange={(e) => {
-                  handleProgressBar(+e.target.value, "fixAmount");
+                  handleProgressBar(+e.target.value, 'fixAmount');
                 }}
               />
             </Stack>
@@ -548,10 +503,8 @@ function Jar({ clientId }: Props) {
 
           <Panel title="Avatar">
             <Stack spacing={1}>
-              <Box sx={{ display: "flex", gap: "16px", alignItems: "center" }}>
-                <Box sx={{ flex: 1 }}>
-                  Тривалість анімації: {animationDuration}сек
-                </Box>
+              <Box sx={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <Box sx={{ flex: 1 }}>Тривалість анімації: {animationDuration}сек</Box>
                 <Slider
                   sx={{ flex: 1 }}
                   value={animationDuration}
@@ -578,17 +531,13 @@ function Jar({ clientId }: Props) {
             actions={
               <Button
                 variant="outlined"
-                onClick={() =>
-                  navigator.clipboard.writeText(
-                    windowLocationOrigin + pathname + makeSearchParams,
-                  )
-                }
+                onClick={() => navigator.clipboard.writeText(windowLocationOrigin + pathname + makeSearchParams)}
               >
                 copy
               </Button>
             }
           >
-            <Box sx={{ maxWidth: "500px" }}>
+            <Box sx={{ maxWidth: '500px' }}>
               <p>{windowLocationOrigin + pathname + makeSearchParams}</p>
             </Box>
           </Panel>
@@ -597,8 +546,8 @@ function Jar({ clientId }: Props) {
 
       <div
         style={{
-          display: "grid",
-          height: "100vh",
+          display: 'grid',
+          height: '100vh',
         }}
       >
         {isShowText ? (
@@ -620,7 +569,10 @@ function Jar({ clientId }: Props) {
           />
         </Scene>
 
-        <Stack direction="column" sx={{ gap: "16px" }}>
+        <Stack
+          direction="column"
+          sx={{ gap: '16px' }}
+        >
           {progressBar.isShow ? (
             <JarProgressBar
               {...{ jarAmount, jarGoal, interfaceFontColor }}
@@ -629,14 +581,10 @@ function Jar({ clientId }: Props) {
             />
           ) : null}
 
-          {isShowText ? (
-            <Footer {...{ description, interfaceFontColor }} />
-          ) : null}
+          {isShowText ? <Footer {...{ description, interfaceFontColor }} /> : null}
         </Stack>
 
-        {isWidgetMode ? null : (
-          <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />
-        )}
+        {isWidgetMode ? null : <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />}
       </div>
     </div>
   );

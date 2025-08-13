@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { rubikMonoOne } from "@/lib/fonts";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import './globals.css';
+
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
+import { GoogleAnalytics } from '@next/third-parties/google';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import type { Metadata } from 'next';
+
+import { rubikMonoOne } from '@/lib/fonts';
 
 export const metadata: Metadata = {
-  title: "Tanok - пітримка зборів",
+  title: 'Tanok - пітримка зборів',
   description:
-    "Tanok – інструмент пітримки зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!",
+    'Tanok – інструмент пітримки зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!',
 };
 
 export default function RootLayout({

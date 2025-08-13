@@ -1,20 +1,21 @@
-"use client";
-import { FC, useEffect, useState } from "react";
-import { Fab, Stack, TextField } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { setCookie, getCookie } from "@/lib/utils";
+'use client';
+import { Fab, Stack, TextField } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+
+import { setCookie, getCookie } from '@/lib/utils';
 
 export const RedirectForm: FC = () => {
   const router = useRouter();
-  const [textFieldValue, setTextFieldValue] = useState("");
+  const [textFieldValue, setTextFieldValue] = useState('');
 
   useEffect(() => {
-    const jarId = getCookie("jarId") ?? "";
+    const jarId = getCookie('jarId') ?? '';
     setTextFieldValue(jarId);
   }, []);
 
   const handleSubmit = () => {
-    setCookie("jarId", textFieldValue);
+    setCookie('jarId', textFieldValue);
 
     router.push(`/jars/${textFieldValue}`);
   };
@@ -23,14 +24,14 @@ export const RedirectForm: FC = () => {
     <Stack
       direction="row"
       sx={{
-        alignItems: "center",
-        gap: "16px",
+        alignItems: 'center',
+        gap: '16px',
       }}
     >
       <Stack
         direction="row"
         sx={{
-          alignItems: "center",
+          alignItems: 'center',
         }}
       >
         <p>https://send.monobank.ua/jar/</p>
