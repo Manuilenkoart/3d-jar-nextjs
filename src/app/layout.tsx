@@ -9,9 +9,9 @@ import type { Metadata } from 'next';
 import { rubikMonoOne } from '@/lib/fonts';
 
 export const metadata: Metadata = {
-  title: 'Tanok - пітримка зборів',
+  title: 'Tanok - підтримка зборів',
   description:
-    'Tanok – інструмент пітримки зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!',
+    'Tanok – інструмент підтримка зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!',
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="uk">
       <body className={rubikMonoOne.className}>
         <AppRouterCacheProvider>
           {children}

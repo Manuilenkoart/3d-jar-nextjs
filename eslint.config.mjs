@@ -22,7 +22,7 @@ const eslintConfig = [
     rules: {
       "arrow-body-style": ["error", "as-needed"],
       "no-unused-vars": [
-        "error",
+        "warn",
         {
           vars: "all",
           args: "after-used",
@@ -30,9 +30,6 @@ const eslintConfig = [
           ignoreRestSiblings: false,
           ignoreUsingDeclarations: false,
           reportUsedIgnorePattern: false,
-        },
-        "warn",
-        {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
         },
