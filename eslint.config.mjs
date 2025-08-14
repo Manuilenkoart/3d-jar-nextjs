@@ -1,7 +1,7 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-import { FlatCompat } from "@eslint/eslintrc";
+import { FlatCompat } from '@eslint/eslintrc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,59 +11,32 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends(
-    "next/core-web-vitals",
-    "next",
-    "prettier",
-    "plugin:prettier/recommended",
-    "plugin:@typescript-eslint/recommended",
-  ),
+  ...compat.extends('next/core-web-vitals', 'next', 'prettier', 'plugin:prettier/recommended'),
   {
     rules: {
-      "arrow-body-style": ["error", "as-needed"],
-      "no-unused-vars": [
-        "warn",
+      'arrow-body-style': ['error', 'as-needed'],
+      'no-unused-vars': [
+        'error',
         {
-          vars: "all",
-          args: "after-used",
-          caughtErrors: "all",
-          ignoreRestSiblings: false,
-          ignoreUsingDeclarations: false,
-          reportUsedIgnorePattern: false,
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
         },
       ],
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
+      'import/order': [
+        'warn',
         {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
-      "import/order": [
-        "warn",
-        {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-            "object",
-          ],
-          "newlines-between": "always",
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object'],
+          'newlines-between': 'always',
           alphabetize: {
-            order: "asc",
+            order: 'asc',
             caseInsensitive: true,
           },
         },
       ],
-      "jsx-a11y/anchor-is-valid": [
-        "warn",
+      'jsx-a11y/anchor-is-valid': [
+        'warn',
         {
-          aspects: ["invalidHref", "preferButton"],
+          aspects: ['invalidHref', 'preferButton'],
         },
       ],
     },

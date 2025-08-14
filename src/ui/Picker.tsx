@@ -4,7 +4,7 @@ import { FC, memo } from 'react';
 type Props = {
   title: string;
   value: string;
-  onChange: (color: string) => void;
+  onChange: (_color: string) => void;
 };
 export const Picker: FC<Props> = memo(({ title, value, onChange }) => (
   <Stack
