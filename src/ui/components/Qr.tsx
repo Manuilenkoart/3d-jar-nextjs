@@ -18,7 +18,7 @@ export const Qr: FC<Props> = memo(({ isShow, clientId, light, dark }) => {
     () => `https://quickchart.io/qr?text=https://send.monobank.ua/jar/${clientId}&margin=0&light=${light}&dark=${dark}`,
     [clientId, light, dark],
   );
-  const debounceUrl = debounce(setSrc, 1000);
+  const debounceUrl = debounce(setSrc, 500);
 
   useEffect(() => {
     if (!isShow) return;
@@ -26,17 +26,14 @@ export const Qr: FC<Props> = memo(({ isShow, clientId, light, dark }) => {
     debounceUrl(qrUrl);
   }, [qrUrl, isShow, debounceUrl]);
 
-  if (isShow && !src) return <p>QR loading...</p>;
-  if (!isShow) return null;
-
-  return (
+  return isShow && src ? (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt="qr code"
       loading="lazy"
     />
-  );
+  ) : null;
 });
 
 Qr.displayName = 'Qr';
