@@ -14,6 +14,7 @@ export const LOCAL_STORAGE_KEYS = {
   isShowText: 'is-show-text',
   avatarAnimationDuration: 'avatar-animation-duration',
   hasAvatarShadow: 'has-avatar-shadow',
+  isShowQr: 'is-show-qr',
 };
 
 export const SEARCH_PARAMS = {
@@ -29,6 +30,7 @@ export const SEARCH_PARAMS = {
     isFixAmount: 'progress-bar-is-fix-amount',
     fixAmount: 'progress-bar-fix-amount',
   },
+  isShowQr: 'is-show-qr',
 };
 
 export const UTM = {

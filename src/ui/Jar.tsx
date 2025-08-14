@@ -37,7 +37,7 @@ import { Model } from '@/ui/Model';
 import { Scene } from '@/ui/Scene';
 import { StatusBar } from '@/ui/StatusBar';
 
-import { JarProgressBar, Panel } from './components';
+import { JarProgressBar, Panel, Qr } from './components';
 import { Picker } from './Picker';
 
 type Props = {
@@ -147,6 +147,13 @@ function Jar({ clientId }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [isShowQr, setIsShowQr] = useState(() => {
+    const param = searchParams.get(SEARCH_PARAMS.isShowQr);
+    const storage = read(LOCAL_STORAGE_KEYS.isShowQr);
+
+    return param ? (JSON.parse(param) as boolean) : (storage ?? false);
+  });
 
   const debounceAnimation = debounce(setAnimationIndex, 1000 * animationDuration);
 
@@ -270,6 +277,10 @@ function Jar({ clientId }: Props) {
     }
   }, []);
 
+  const handleIsShowQr = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setIsShowQr(e.target.checked);
+  }, []);
+
   const makeSearchParams = useMemo(
     () =>
       [
@@ -288,6 +299,7 @@ function Jar({ clientId }: Props) {
           name: SEARCH_PARAMS.progressBar.fixAmount,
           value: progressBar.fixAmount,
         },
+        { name: SEARCH_PARAMS.isShowQr, value: isShowQr },
       ]
         .map(
           ({ name, value }, idx) =>
@@ -299,6 +311,7 @@ function Jar({ clientId }: Props) {
       bcColor,
       hasAvatarShadow,
       interfaceFontColor,
+      isShowQr,
       isShowText,
       isTransparent,
       progressBar.fixAmount,
@@ -315,13 +328,14 @@ function Jar({ clientId }: Props) {
     write(LOCAL_STORAGE_KEYS.bcColorIsTransparent, isTransparent);
     write(LOCAL_STORAGE_KEYS.isShowText, isShowText);
     write(LOCAL_STORAGE_KEYS.hasAvatarShadow, hasAvatarShadow);
+    write(LOCAL_STORAGE_KEYS.isShowQr, isShowQr);
 
     if (clientId !== inputJarId) {
       setCookie(COOKIE_KEYS.jarId, inputJarId);
 
       router.push(`/jars/${inputJarId}`);
     }
-  }, [animationDuration, bcColor, isTransparent, isShowText, hasAvatarShadow, clientId, inputJarId, router]);
+  }, [animationDuration, bcColor, isTransparent, isShowText, hasAvatarShadow, isShowQr, clientId, inputJarId, router]);
 
   const handleIsShowInterfaceText = useCallback(() => {
     setIsShowText((p) => !p);
@@ -458,15 +472,30 @@ function Jar({ clientId }: Props) {
                 </>
               ) : null}
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={progressBar.isShow}
-                    onChange={(e) => handleProgressBar(e.target.checked, 'isShow')}
-                  />
-                }
-                label="Progress bar"
-              />
+              <Stack
+                direction={'row'}
+                sx={{ gap: '8px', justifyContent: 'space-between' }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={progressBar.isShow}
+                      onChange={(e) => handleProgressBar(e.target.checked, 'isShow')}
+                    />
+                  }
+                  label="Progress bar"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isShowQr}
+                      onChange={handleIsShowQr}
+                    />
+                  }
+                  label="QR code"
+                />
+              </Stack>
             </Stack>
           </Panel>
 
@@ -585,6 +614,13 @@ function Jar({ clientId }: Props) {
         </Stack>
 
         {isWidgetMode ? null : <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />}
+
+        <Qr
+          isShow={isShowQr && !fetchError}
+          clientId={clientId}
+          light={bcColor.slice(1)}
+          dark={interfaceFontColor.slice(1)}
+        />
       </div>
     </div>
   );
