@@ -26,8 +26,6 @@ export const JarProgressBar: FC<Props> = memo(
       <Stack
         direction="row"
         sx={{
-          width: '500px',
-          margin: 'auto',
           gap: '24px',
           alignItems: 'center',
           paddingBottom: '25px',
@@ -37,7 +35,7 @@ export const JarProgressBar: FC<Props> = memo(
         <Currency value={amount} />
         <Box
           sx={{
-            width: '70%',
+            width: '100%',
             border: `1px solid ${interfaceFontColor}`,
             borderRadius: '8px',
             padding: '4px',

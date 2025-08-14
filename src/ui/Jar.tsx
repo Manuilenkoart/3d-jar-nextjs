@@ -197,8 +197,10 @@ function Jar({ clientId }: Props) {
 
   useEffect(() => {
     if (mainJarInfo) {
-      const isShowParam = searchParams.get(SEARCH_PARAMS.progressBar.isShow);
-      const isFixAmountParam = searchParams.get(SEARCH_PARAMS.progressBar.isFixAmount);
+      const isShowParam =
+        searchParams.get(SEARCH_PARAMS.progressBar.isShow) ?? read(LOCAL_STORAGE_KEYS.progressBar.isShow);
+      const isFixAmountParam =
+        searchParams.get(SEARCH_PARAMS.progressBar.isFixAmount) ?? read(LOCAL_STORAGE_KEYS.progressBar.isFixAmount);
       const fixAmountParam = searchParams.get(SEARCH_PARAMS.progressBar.fixAmount);
 
       const isShow = isShowParam ? (JSON.parse(isShowParam) as boolean) : false;
@@ -328,6 +330,9 @@ function Jar({ clientId }: Props) {
     write(LOCAL_STORAGE_KEYS.bcColorIsTransparent, isTransparent);
     write(LOCAL_STORAGE_KEYS.isShowText, isShowText);
     write(LOCAL_STORAGE_KEYS.hasAvatarShadow, hasAvatarShadow);
+    write(LOCAL_STORAGE_KEYS.progressBar.isShow, progressBar.isShow);
+    write(LOCAL_STORAGE_KEYS.progressBar.isFixAmount, progressBar.isFixAmount);
+
     write(LOCAL_STORAGE_KEYS.isShowQr, isShowQr);
 
     if (clientId !== inputJarId) {
@@ -335,7 +340,19 @@ function Jar({ clientId }: Props) {
 
       router.push(`/jars/${inputJarId}`);
     }
-  }, [animationDuration, bcColor, isTransparent, isShowText, hasAvatarShadow, isShowQr, clientId, inputJarId, router]);
+  }, [
+    animationDuration,
+    bcColor,
+    isTransparent,
+    isShowText,
+    hasAvatarShadow,
+    progressBar.isShow,
+    progressBar.isFixAmount,
+    isShowQr,
+    clientId,
+    inputJarId,
+    router,
+  ]);
 
   const handleIsShowInterfaceText = useCallback(() => {
     setIsShowText((p) => !p);
@@ -598,29 +615,66 @@ function Jar({ clientId }: Props) {
           />
         </Scene>
 
-        <Stack
-          direction="column"
-          sx={{ gap: '16px' }}
+        <div
+          style={{
+            display: 'grid',
+            gap: '8px',
+            padding: '4px',
+            gridTemplateColumns: 'minmax(150px, auto) minmax(auto, 500px) minmax(150px, auto)',
+            alignItems: 'end',
+          }}
         >
-          {progressBar.isShow ? (
-            <JarProgressBar
-              {...{ jarAmount, jarGoal, interfaceFontColor }}
-              fixedAmount={progressBar.fixAmount}
-              isFixAmount={progressBar.isFixAmount}
+          <div
+            style={{
+              gridColumnStart: 1,
+              gridColumnEnd: 2,
+              gridRowStart: 1,
+              gridRowEnd: 2,
+            }}
+          >
+            {isWidgetMode ? null : <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />}
+          </div>
+
+          <div
+            style={{
+              gridColumnStart: 2,
+              gridColumnEnd: 3,
+              gridRowStart: 1,
+              gridRowEnd: 2,
+              textAlign: 'center',
+              gap: '24px',
+              display: 'grid',
+            }}
+          >
+            {progressBar.isShow ? (
+              <JarProgressBar
+                {...{ jarAmount, jarGoal, interfaceFontColor }}
+                fixedAmount={progressBar.fixAmount}
+                isFixAmount={progressBar.isFixAmount}
+              />
+            ) : null}
+
+            {isShowText ? <Footer {...{ description, interfaceFontColor }} /> : null}
+          </div>
+
+          <div
+            style={{
+              gridColumnStart: 3,
+              gridColumnEnd: 4,
+              gridRowStart: 1,
+              gridRowEnd: 2,
+              justifyContent: 'right',
+              display: 'grid',
+            }}
+          >
+            <Qr
+              isShow={isShowQr && !fetchError}
+              clientId={clientId}
+              light={bcColor.slice(1)}
+              dark={interfaceFontColor.slice(1)}
             />
-          ) : null}
-
-          {isShowText ? <Footer {...{ description, interfaceFontColor }} /> : null}
-        </Stack>
-
-        {isWidgetMode ? null : <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />}
-
-        <Qr
-          isShow={isShowQr && !fetchError}
-          clientId={clientId}
-          light={bcColor.slice(1)}
-          dark={interfaceFontColor.slice(1)}
-        />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -11,26 +11,20 @@ type Props = {
   fetchError: string;
 };
 export const StatusBar: FC<Props> = memo(({ isLoading, jarAmount, jarGoal, fetchError }) => (
-  <Stack
-    direction={'row'}
-    sx={{
-      position: 'absolute',
-      left: 0,
-      bottom: 0,
-      color: '#8894a5',
-      padding: '12px',
-    }}
-  >
-    <AutorenewIcon
-      fontSize="small"
-      sx={{
-        transform: `rotate(${isLoading ? 360 : 0}deg)`,
-        transition: 'transform 1s linear',
-      }}
-    />
-    <Box>{!jarAmount && !jarGoal && !fetchError ? 'Loading...' : null}</Box>
+  <Box>
     <Box>{fetchError ?? ''}</Box>
-  </Stack>
+
+    <Stack direction="row">
+      <AutorenewIcon
+        fontSize="small"
+        sx={{
+          transform: `rotate(${isLoading ? 360 : 0}deg)`,
+          transition: 'transform 1s linear',
+        }}
+      />
+      <Box>{!jarAmount && !jarGoal && !fetchError ? 'Loading...' : null}</Box>
+    </Stack>
+  </Box>
 ));
 
 StatusBar.displayName = 'StatusBar';

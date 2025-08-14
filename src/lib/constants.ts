@@ -14,6 +14,11 @@ export const LOCAL_STORAGE_KEYS = {
   isShowText: 'is-show-text',
   avatarAnimationDuration: 'avatar-animation-duration',
   hasAvatarShadow: 'has-avatar-shadow',
+  progressBar: {
+    isShow: 'progress-bar-is-show',
+    isFixAmount: 'progress-bar-is-fix-amount',
+    fixAmount: 'progress-bar-fix-amount',
+  },
   isShowQr: 'is-show-qr',
 };
 

@@ -26,12 +26,12 @@ export const Qr: FC<Props> = memo(({ isShow, clientId, light, dark }) => {
     debounceUrl(qrUrl);
   }, [qrUrl, isShow, debounceUrl]);
 
-  if (!isShow || !src) return null;
+  if (isShow && !src) return <p>QR loading...</p>;
+  if (!isShow) return null;
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      style={{ position: 'absolute', bottom: '0', right: '0', padding: '2px' }}
       src={src}
       alt="qr code"
       loading="lazy"
