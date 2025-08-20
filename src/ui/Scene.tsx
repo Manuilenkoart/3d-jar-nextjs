@@ -4,9 +4,15 @@ import { Environment, OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { FC, memo, PropsWithChildren, Suspense } from 'react';
 
+import { SceneEnvironment } from '@/lib/definitions';
+
 import { ModelLoadingStatus } from './components';
 
-export const Scene: FC<PropsWithChildren> = memo(({ children }) => (
+type Props = PropsWithChildren & {
+  sceneEnvironment: SceneEnvironment;
+};
+
+export const Scene: FC<Props> = memo(({ children, sceneEnvironment }) => (
   <Canvas
     camera={{
       position: [0, 2, 5],
@@ -16,7 +22,7 @@ export const Scene: FC<PropsWithChildren> = memo(({ children }) => (
   >
     <Suspense fallback={<ModelLoadingStatus />}>
       <OrbitControls makeDefault />
-      <Environment preset="lobby" />
+      <Environment preset={sceneEnvironment} />
       {/* <ambientLight /> */}
 
       <directionalLight
@@ -34,7 +40,7 @@ export const Scene: FC<PropsWithChildren> = memo(({ children }) => (
         shadow-normalBias={0.005}
       />
 
-      <group position={[0, -1, 0]}>{children}</group>
+      <group position={[0, -1.2, 0]}>{children}</group>
 
       <mesh
         rotation={[-0.5 * Math.PI, 0, 0]}

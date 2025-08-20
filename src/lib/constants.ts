@@ -21,6 +21,7 @@ export const LOCAL_STORAGE_KEYS = {
     fixAmount: 'progress-bar-fix-amount',
   },
   isShowQr: 'is-show-qr',
+  avatar: 'avatar',
 };
 
 export const SEARCH_PARAMS = {
@@ -37,6 +38,7 @@ export const SEARCH_PARAMS = {
     fixAmount: 'progress-bar-fix-amount',
   },
   isShowQr: 'is-show-qr',
+  avatar: 'avatar',
 };
 
 export const UTM = {

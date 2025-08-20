@@ -15,7 +15,8 @@ import {
   TextField,
 } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, memo, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { lazy } from 'react';
 import useSWR from 'swr';
 
 import {
@@ -27,18 +28,20 @@ import {
   RE_FETCH_INTERVAL,
   UTM,
 } from '@/lib/constants';
-import { TJar } from '@/lib/definitions';
+import { Avatar, SceneEnvironment, TJar } from '@/lib/definitions';
 import { inter } from '@/lib/fonts';
 import { fetcher, fetchWidgetJarInfo } from '@/lib/hooks';
 import { write, read, debounce, setCookie, getWindowLocationOrigin } from '@/lib/utils';
 import { Footer } from '@/ui/Footer';
 import { Header } from '@/ui/Header';
-import { Model } from '@/ui/Model';
 import { Scene } from '@/ui/Scene';
 import { StatusBar } from '@/ui/StatusBar';
 
 import { JarProgressBar, Panel, Qr } from './components';
 import { Picker } from './Picker';
+
+const SorceressComponent = lazy(() => import('@/ui/Sorceress'));
+const MouseComponent = lazy(() => import('@/ui/Mouse'));
 
 type Props = {
   clientId: string;
@@ -364,6 +367,38 @@ function Jar({ clientId }: Props) {
 
   const windowLocationOrigin = useMemo(() => getWindowLocationOrigin(), []);
 
+  const avatar = useMemo(() => {
+    const setup: Record<Avatar, { name: Avatar; sceneEnvironment: SceneEnvironment; component: ReactNode }> = {
+      mouse: {
+        name: 'mouse',
+        sceneEnvironment: 'lobby',
+        component: (
+          <MouseComponent
+            isCastShadow={hasAvatarShadow}
+            position={[0, 0, 0]}
+            animationIndex={animationIndex}
+          />
+        ),
+      },
+      sorceress: {
+        name: 'sorceress',
+        sceneEnvironment: 'forest',
+        component: (
+          <SorceressComponent
+            isCastShadow={hasAvatarShadow}
+            position={[0, 0, 0]}
+            animationIndex={animationIndex}
+          />
+        ),
+      },
+    };
+
+    const params: Avatar =
+      searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? setup.mouse.name;
+
+    return setup[params];
+  }, [animationIndex, hasAvatarShadow, searchParams]);
+
   const { name, description, jarAmount, jarGoal } = useMemo(() => jarData, [jarData]);
 
   return (
@@ -607,13 +642,7 @@ function Jar({ clientId }: Props) {
           />
         ) : null}
 
-        <Scene>
-          <Model
-            isCastShadow={hasAvatarShadow}
-            position={[0, 0, 0]}
-            animationIndex={animationIndex}
-          />
-        </Scene>
+        {avatar ? <Scene sceneEnvironment={avatar.sceneEnvironment}>{avatar.component}</Scene> : null}
 
         <div
           style={{

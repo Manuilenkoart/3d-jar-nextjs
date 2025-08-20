@@ -32,6 +32,7 @@ export const Qr: FC<Props> = memo(({ isShow, clientId, light, dark }) => {
       src={src}
       alt="qr code"
       loading="lazy"
+      style={{ position: 'absolute', bottom: '4px', right: '4px' }}
     />
   ) : null;
 });
