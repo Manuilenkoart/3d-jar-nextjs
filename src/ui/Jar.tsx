@@ -42,6 +42,7 @@ import { Picker } from './Picker';
 
 const SorceressComponent = lazy(() => import('@/ui/Sorceress'));
 const MouseComponent = lazy(() => import('@/ui/Mouse'));
+const BenderComponent = lazy(() => import('@/ui/Bender'));
 
 type Props = {
   clientId: string;
@@ -391,10 +392,21 @@ function Jar({ clientId }: Props) {
           />
         ),
       },
+      bender: {
+        name: 'bender',
+        sceneEnvironment: 'forest',
+        component: (
+          <BenderComponent
+            isCastShadow={hasAvatarShadow}
+            position={[0, 0, 0]}
+            animationIndex={animationIndex}
+          />
+        ),
+      },
     };
 
     const params: Avatar =
-      searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? setup.mouse.name;
+      searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? setup.bender.name;
 
     return setup[params];
   }, [animationIndex, hasAvatarShadow, searchParams]);
