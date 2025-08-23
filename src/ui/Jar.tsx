@@ -656,56 +656,64 @@ function Jar({ clientId }: Props) {
 
         {avatar ? <Scene sceneEnvironment={avatar.sceneEnvironment}>{avatar.component}</Scene> : null}
 
-        <div
-          style={{
+        <Box
+          sx={{
             display: 'grid',
-            gap: '8px',
-            padding: '4px',
+            gap: 1,
+            p: 0.5,
             gridTemplateColumns: 'minmax(150px, auto) minmax(auto, 500px) minmax(150px, auto)',
             alignItems: 'end',
           }}
         >
-          <div
-            style={{
-              gridColumnStart: 1,
-              gridColumnEnd: 2,
-              gridRowStart: 1,
-              gridRowEnd: 2,
+          <Box
+            sx={{
+              gridColumn: '1 / 2',
+              gridRow: '1 / 2',
             }}
           >
-            {isWidgetMode ? null : <StatusBar {...{ isLoading, jarAmount, jarGoal, fetchError }} />}
-          </div>
+            {!isWidgetMode && (
+              <StatusBar
+                isLoading={isLoading}
+                jarAmount={jarAmount}
+                jarGoal={jarGoal}
+                fetchError={fetchError}
+              />
+            )}
+          </Box>
 
-          <div
-            style={{
-              gridColumnStart: 2,
-              gridColumnEnd: 3,
-              gridRowStart: 1,
-              gridRowEnd: 2,
+          <Box
+            sx={{
+              gridColumn: '2 / 3',
+              gridRow: '1 / 2',
               textAlign: 'center',
-              gap: '24px',
               display: 'grid',
+              gap: 3,
             }}
           >
-            {progressBar.isShow ? (
+            {progressBar.isShow && (
               <JarProgressBar
-                {...{ jarAmount, jarGoal, interfaceFontColor }}
+                jarAmount={jarAmount}
+                jarGoal={jarGoal}
+                interfaceFontColor={interfaceFontColor}
                 fixedAmount={progressBar.fixAmount}
                 isFixAmount={progressBar.isFixAmount}
               />
-            ) : null}
+            )}
 
-            {isShowText ? <Footer {...{ description, interfaceFontColor }} /> : null}
-          </div>
+            {isShowText && (
+              <Footer
+                description={description}
+                interfaceFontColor={interfaceFontColor}
+              />
+            )}
+          </Box>
 
-          <div
-            style={{
-              gridColumnStart: 3,
-              gridColumnEnd: 4,
-              gridRowStart: 1,
-              gridRowEnd: 2,
-              justifyContent: 'right',
-              display: 'grid',
+          <Box
+            sx={{
+              gridColumn: '3 / 4',
+              gridRow: '1 / 2',
+              display: 'flex',
+              justifyContent: 'flex-end',
             }}
           >
             <Qr
@@ -714,8 +722,8 @@ function Jar({ clientId }: Props) {
               light={bcColor.slice(1)}
               dark={interfaceFontColor.slice(1)}
             />
-          </div>
-        </div>
+          </Box>
+        </Box>
       </div>
     </div>
   );
