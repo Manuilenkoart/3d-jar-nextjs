@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, memo, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { lazy } from 'react';
 import useSWR from 'swr';
 
 import {
@@ -38,11 +37,8 @@ import { Scene } from '@/ui/Scene';
 import { StatusBar } from '@/ui/StatusBar';
 
 import { JarProgressBar, Panel, Qr } from './components';
+import { BenderComponent, MouseComponent, SorceressComponent } from './models';
 import { Picker } from './Picker';
-
-const SorceressComponent = lazy(() => import('@/ui/Sorceress'));
-const MouseComponent = lazy(() => import('@/ui/Mouse'));
-const BenderComponent = lazy(() => import('@/ui/Bender'));
 
 type Props = {
   clientId: string;
