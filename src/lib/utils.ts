@@ -36,10 +36,10 @@ export const read = (key: string, defaultValue = null) => {
   }
 };
 
-export const debounce = (fn: Function, delay = 300) => {
+export const debounce = <T>(fn: (...args: T[]) => void, delay = 300) => {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-  return (...args: unknown[]) => {
+  return (...args: T[]) => {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }

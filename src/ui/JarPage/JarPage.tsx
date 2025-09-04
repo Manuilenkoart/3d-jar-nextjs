@@ -79,7 +79,6 @@ function JarPage({ clientId }: Props) {
     if (isTransparent !== isTransparentStorage) {
       setIsTransparent(isTransparentStorage);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -104,7 +103,6 @@ function JarPage({ clientId }: Props) {
     if (hasAvatarShadow !== hasAvatarShadowStorage) {
       setHasAvatarShadow(hasAvatarShadowStorage);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
