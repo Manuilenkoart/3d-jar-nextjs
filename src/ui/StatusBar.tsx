@@ -8,7 +8,7 @@ type Props = {
   isLoading: boolean;
   jarAmount: TJar['jarAmount'];
   jarGoal: TJar['jarGoal'];
-  fetchError: string;
+  fetchError: string | null;
 };
 export const StatusBar: FC<Props> = memo(({ isLoading, jarAmount, jarGoal, fetchError }) => (
   <Box>

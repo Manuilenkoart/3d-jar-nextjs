@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
-import Jar from '@/ui/Jar';
+import { JarPage } from '@/ui/JarPage';
 
 export const metadata: Metadata = {
   title: 'Танцюючий аватар',
@@ -14,5 +14,5 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   if (!id) return redirect('/');
 
-  return <Jar clientId={id} />;
+  return <JarPage clientId={id} />;
 }

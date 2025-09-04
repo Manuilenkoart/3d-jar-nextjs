@@ -7,7 +7,7 @@ export type TJar = {
   errCode?: string;
 };
 
-export type Avatar = 'mouse' | 'sorceress' | 'bender';
+export type Avatar = 'mouse' | 'sorceress' | 'bender' | 'qrCat' | 'toyota';
 export type SceneEnvironment =
   | 'apartment'
   | 'city'
@@ -19,3 +19,9 @@ export type SceneEnvironment =
   | 'studio'
   | 'sunset'
   | 'warehouse';
+
+export type ProgressBarState = {
+  isShow: boolean;
+  isFixAmount: boolean;
+  fixAmount: number;
+};

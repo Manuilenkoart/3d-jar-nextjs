@@ -1,10 +1,21 @@
 'use client';
 
+import * as THREE from 'three';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import React, { FC, memo, useEffect, useRef } from 'react';
-import { Group } from 'three';
+import { GLTF } from 'three-stdlib';
 
 useGLTF.preload('/Mouse.glb');
+
+type GLTFResult = GLTF & {
+  nodes: {
+    Ch14: THREE.SkinnedMesh;
+    mixamorigHips: THREE.Bone;
+  };
+  materials: {
+    Ch14_Body: THREE.MeshPhysicalMaterial;
+  };
+};
 
 type Props = {
   position: [x: number, y: number, z: number];
@@ -13,9 +24,9 @@ type Props = {
 };
 
 const Mouse: FC<Props> = ({ position, isCastShadow, animationIndex }) => {
-  const group = useRef<Group>(null);
+  const group = useRef<THREE.Group>(null);
 
-  const { nodes, materials, animations } = useGLTF('/Mouse.glb') as any;
+  const { nodes, materials, animations } = useGLTF('/Mouse.glb') as unknown as GLTFResult;
 
   const { actions, names } = useAnimations(animations, group);
 
