@@ -36,6 +36,9 @@ function JarPage({ clientId }: Props) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
+  const [model, setModel] = useState<Avatar>(
+    () => searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? 'bender',
+  );
   const [isVisibleSidebar, setIsVisibleSidebar] = useState(false);
   const [inputJarId, setInputJarId] = useState(clientId);
 
@@ -169,6 +172,10 @@ function JarPage({ clientId }: Props) {
     setHasAvatarShadow((p) => !p);
   }, []);
 
+  const handleChangeAvatar = useCallback((model: Avatar) => {
+    setModel(model);
+  }, []);
+
   const handleHideSideBar = useCallback(() => {
     setIsVisibleSidebar(false);
 
@@ -181,6 +188,7 @@ function JarPage({ clientId }: Props) {
     write(LOCAL_STORAGE_KEYS.progressBar.isShow, progressBar.isShow);
     write(LOCAL_STORAGE_KEYS.progressBar.isFixAmount, progressBar.isFixAmount);
     write(LOCAL_STORAGE_KEYS.isShowQr, isShowQr);
+    write(LOCAL_STORAGE_KEYS.avatar, model);
 
     if (clientId !== inputJarId) {
       setCookie(COOKIE_KEYS.jarId, inputJarId);
@@ -197,6 +205,7 @@ function JarPage({ clientId }: Props) {
     clientId,
     inputJarId,
     router,
+    model,
   ]);
 
   const handleJarIdSubmit = useCallback(() => {
@@ -289,11 +298,8 @@ function JarPage({ clientId }: Props) {
       },
     };
 
-    const params: Avatar =
-      searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? setup.bender.name;
-
-    return setup[params];
-  }, [animationIndex, hasAvatarShadow, searchParams]);
+    return setup[model];
+  }, [animationIndex, hasAvatarShadow, model]);
 
   const { name, description, jarAmount, jarGoal } = jarData;
 
@@ -360,6 +366,8 @@ function JarPage({ clientId }: Props) {
             hasAvatarShadow={hasAvatarShadow}
             onAnimationDurationChange={setAnimationDuration}
             onAvatarShadowToggle={handleAvatarShadow}
+            avatarOption={model}
+            onAvatarChange={handleChangeAvatar}
           />
 
           <StreamingLinkSettings

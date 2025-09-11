@@ -4,3 +4,4 @@ export { default as ModelLoadingStatus } from './ModelLoadingStatus';
 export { default as CircularProgressWithLabel } from './CircularProgressWithLabel';
 export { JarProgressBar } from './JarProgressBar';
 export { Qr } from './Qr';
+export { Selector } from './Selector';
