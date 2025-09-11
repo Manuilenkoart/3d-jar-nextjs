@@ -5,8 +5,7 @@ import { JarPage } from '@/ui/JarPage';
 
 export const metadata: Metadata = {
   title: 'Танцюючий аватар',
-  description:
-    'Tanok – інструмент підтримки зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!',
+  description: 'Після кожного донату оживає аватар. Підтримайте збір та насолоджуйтеся веселим танцем!',
 };
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {

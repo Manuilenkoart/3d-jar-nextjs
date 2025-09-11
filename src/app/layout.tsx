@@ -9,9 +9,8 @@ import type { Metadata } from 'next';
 import { rubikMonoOne } from '@/lib/fonts';
 
 export const metadata: Metadata = {
-  title: 'Tanok - підтримка зборів',
-  description:
-    'Tanok – інструмент підтримка зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!',
+  title: 'Tanok - гейміфікація зборів',
+  description: 'Після кожного донату оживає аватар. Підтримайте збір та насолоджуйтеся веселим танцем!',
 };
 
 export default function RootLayout({

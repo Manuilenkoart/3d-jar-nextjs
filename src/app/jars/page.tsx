@@ -6,8 +6,7 @@ import { COOKIE_KEYS } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Збір',
-  description:
-    'Tanok – інструмент підтримки зборів, де після кожного внеску оживає танцюючий аватар. Підтримайте улюблених авторів та насолоджуйтеся веселим танцем!',
+  description: 'Після кожного донату оживає аватар. Підтримайте збір та насолоджуйтеся веселим танцем!',
 };
 
 export default async function Page() {
