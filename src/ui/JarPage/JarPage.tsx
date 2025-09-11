@@ -220,6 +220,7 @@ function JarPage({ clientId }: Props) {
   const makeSearchParams = useMemo(
     () =>
       [
+        { name: SEARCH_PARAMS.avatar, value: model },
         { name: SEARCH_PARAMS.isTranparent, value: isTransparent },
         { name: SEARCH_PARAMS.isShowText, value: isShowText },
         { name: SEARCH_PARAMS.fontColor, value: interfaceFontColor.slice(1) },
@@ -236,7 +237,17 @@ function JarPage({ clientId }: Props) {
             `${idx === 0 ? `?${SEARCH_PARAMS.utmContent}=${UTM.content.isWidgetMode}&` : '&'}${name}=${value}`,
         )
         .join(''),
-    [animationDuration, bcColor, hasAvatarShadow, interfaceFontColor, isShowQr, isShowText, isTransparent, progressBar],
+    [
+      animationDuration,
+      bcColor,
+      hasAvatarShadow,
+      interfaceFontColor,
+      isShowQr,
+      isShowText,
+      isTransparent,
+      progressBar,
+      model,
+    ],
   );
 
   const windowLocationOrigin = useMemo(() => getWindowLocationOrigin(), []);
