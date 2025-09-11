@@ -53,6 +53,7 @@ export const AvatarSettings: FC<Props> = memo(
           options={[
             { label: 'Bender', value: 'bender' },
             { label: 'Mouse', value: 'mouse' },
+            { label: 'Sorceress', value: 'sorceress' },
           ]}
         />
       </Stack>
