@@ -44,7 +44,7 @@ function JarPage({ clientId }: Props) {
   const pathname = usePathname();
 
   const [model, setModel] = useState<Avatar>(
-    () => searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? 'bender',
+    () => searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? 'pumpkin',
   );
   const [isVisibleSidebar, setIsVisibleSidebar] = useState(false);
   const [inputJarId, setInputJarId] = useState(clientId);
