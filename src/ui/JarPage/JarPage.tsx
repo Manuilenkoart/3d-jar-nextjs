@@ -13,7 +13,14 @@ import { Scene } from '@/ui/Scene';
 import { StatusBar } from '@/ui/StatusBar';
 
 import { JarProgressBar, Qr } from '../components';
-import { BenderComponent, MouseComponent, QrCatComponent, SorceressComponent, ToyotaComponent } from '../models';
+import {
+  BenderComponent,
+  MouseComponent,
+  PumpkinComponent,
+  QrCatComponent,
+  SorceressComponent,
+  ToyotaComponent,
+} from '../models';
 
 import {
   AvatarSettings,
@@ -304,6 +311,16 @@ function JarPage({ clientId }: Props) {
           <ToyotaComponent
           // isCastShadow={hasAvatarShadow}
           // animationIndex={animationIndex}
+          />
+        ),
+      },
+      pumpkin: {
+        name: 'pumpkin',
+        sceneEnvironment: 'city',
+        component: (
+          <PumpkinComponent
+            isCastShadow={hasAvatarShadow}
+            animationIndex={animationIndex}
           />
         ),
       },

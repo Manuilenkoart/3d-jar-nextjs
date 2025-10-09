@@ -51,6 +51,7 @@ export const AvatarSettings: FC<Props> = memo(
           value={avatarOption}
           onChange={onAvatarChange}
           options={[
+            { label: 'Pumpkin', value: 'pumpkin' },
             { label: 'Bender', value: 'bender' },
             { label: 'Mouse', value: 'mouse' },
             { label: 'Sorceress', value: 'sorceress' },
