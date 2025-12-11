@@ -20,6 +20,7 @@ import {
   QrCatComponent,
   SorceressComponent,
   ToyotaComponent,
+  RobotComponent,
 } from '../models';
 
 import {
@@ -44,7 +45,7 @@ function JarPage({ clientId }: Props) {
   const pathname = usePathname();
 
   const [model, setModel] = useState<Avatar>(
-    () => searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? 'pumpkin',
+    () => searchParams.get(SEARCH_PARAMS.avatar) ?? read(LOCAL_STORAGE_KEYS.avatar) ?? 'bender',
   );
   const [isVisibleSidebar, setIsVisibleSidebar] = useState(false);
   const [inputJarId, setInputJarId] = useState(clientId);
@@ -321,6 +322,17 @@ function JarPage({ clientId }: Props) {
           <PumpkinComponent
             isCastShadow={hasAvatarShadow}
             animationIndex={animationIndex}
+          />
+        ),
+      },
+      robot: {
+        name: 'robot',
+        sceneEnvironment: 'lobby',
+        component: (
+          <RobotComponent
+            isCastShadow={hasAvatarShadow}
+            animationIndex={animationIndex}
+            position={[0, 0.25, 0]}
           />
         ),
       },

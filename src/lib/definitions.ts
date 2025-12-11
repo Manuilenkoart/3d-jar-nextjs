@@ -7,7 +7,7 @@ export type TJar = {
   errCode?: string;
 };
 
-export type Avatar = 'mouse' | 'sorceress' | 'bender' | 'qrCat' | 'toyota' | 'pumpkin';
+export type Avatar = 'mouse' | 'sorceress' | 'bender' | 'qrCat' | 'toyota' | 'pumpkin' | 'robot';
 export type SceneEnvironment =
   | 'apartment'
   | 'city'

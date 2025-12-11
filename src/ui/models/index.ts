@@ -6,3 +6,4 @@ export const BenderComponent = lazy(() => import('./Bender'));
 export const QrCatComponent = lazy(() => import('./QrCat'));
 export const ToyotaComponent = lazy(() => import('./Toyota'));
 export const PumpkinComponent = lazy(() => import('./Pumpkin'));
+export const RobotComponent = lazy(() => import('./Robot'));
